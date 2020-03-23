@@ -25,10 +25,25 @@
             </el-col>
 
             <el-col :span="7" class="userinfocol">
+                <el-button style="width: 90px;" type="text" size="big" v-if="islogin==false" v-on:click="showlogin">登录
+                </el-button>
 
-                <el-button type="text" size="big" v-if="islogin==false" v-on:click="showlogin">登录</el-button>
+                <el-dropdown @command="handleCommand">
+                    <el-button style="width: 90px;" type="text" class="el-dropdown-link">
+                        <el-avatar size="small" v-if="avatar_url&&islogin==true"
+                                   v-bind:src="avatar_url"></el-avatar>
+                        <el-avatar size="small" v-else-if="islogin==true">{{username}}</el-avatar>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="a">黄金糕</el-dropdown-item>
+                        <el-dropdown-item command="b">狮子头</el-dropdown-item>
+                        <el-dropdown-item command="c">螺蛳粉</el-dropdown-item>
+                        <el-dropdown-item command="d" disabled>双皮奶</el-dropdown-item>
+                        <el-dropdown-item command="logout" divided icon="el">退出登录</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
 
-                <el-avatar size="small" v-else>{{username}}</el-avatar>
+
             </el-col>
             <el-col :span="1"></el-col>
         </el-row>
@@ -39,33 +54,46 @@
 <script>
 
     import Event from '../plugins/event.js';
+    import authapi from "../api/authapi";
 
     export default {
         name: 'NavBar',
         props: {
             msg: String
         },
+        computed: {
+            islogin() {
+                console.log(this.$store.getters)
+                return this.$store.getters.getIsLogin;
+            }, username() {
+                return this.$store.getters["authStore/getUserName"]
+            }, avatar_url() {
+                return this.$store.getters["authStore/getAvatarUrl"]
+            }
+        },
         data() {
             return {
                 searchinput: '',
-                testtext: this.$store.state.testtext,
-                islogin: this.$store.state.islogin,
-                username: this.$store.state.username,
-                avatar_url: this.$store.state.avatar_url
+                testtext: this.$store.state.testtext
             }
         },
         mounted() {
 
         },
         methods: {
-            routeto: function (e) {
-                console.log(e)
-                this.$router.push("/")
+            routeto: function (direction) {
+                this.$router.push(direction)
             }, showlogin: function () {
-                console.log("show login")
-                Event.$emit("showauth");
+                Event.$emit("showauthdialog");
             }, search: function () {
 
+            }, handleCommand(command) {
+                this.$message('click on item ' + command);
+
+                //退出登录
+                if (command == "logout") {
+                    authapi.logout();
+                }
             }
         }
     }

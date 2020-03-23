@@ -5,6 +5,7 @@ export default {
         avatarUrl: '',
         userName: '',
         isVip: false,
+        token: localStorage.getItem("token")
     },
     getters: {
         // eslint-disable-next-line no-unused-vars
@@ -14,6 +15,10 @@ export default {
             return state.testAuthTest;
         }, isVip(state) {
             return state.isVip;
+        }, getToken(state) {
+            return state.token;
+        }, getAvatarUrl(state) {
+            return state.avatarUrl;
         }
     },
     mutations: {
@@ -23,6 +28,8 @@ export default {
             state.isVip = payload;
         }, changetestAuthTest(state, payload) {
             state.testAuthTest = payload;
+        }, changeToken(state, payload) {
+            state.token = payload;
         }
     }
 }

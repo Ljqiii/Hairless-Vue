@@ -7,7 +7,7 @@
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-                <el-input v-model="loginForm.password" class="registerinput" auto-complete="off"></el-input>
+                <el-input v-model="loginForm.password" class="registerinput" auto-complete="off" show-password></el-input>
             </el-form-item>
 
             <p class="registertext">没有账号，
@@ -15,7 +15,9 @@
             </p>
 
             <div class="loginbtncontainer">
-                <el-checkbox v-model="rememberme">记住我</el-checkbox>
+                <el-button type="text">
+                    <el-checkbox v-model="rememberme">记住我</el-checkbox>
+                </el-button>
                 <el-button type="primary" v-on:click="login('loginForm')">登录</el-button>
             </div>
         </el-form>
@@ -25,6 +27,8 @@
 </template>
 
 <script>
+    import authapi from "../../api/authapi";
+
     export default {
         name: 'LoginForm',
         props: {
@@ -40,7 +44,7 @@
                 , rules: {
                     username: [
                         {required: true, message: '请输入用户名', trigger: 'blur'},
-                        {min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur'}
+                        {min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur'}
                     ], password: [
                         {required: true, trigger: ['blur'], message: '请输入密码'},
                         {min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur'}
@@ -52,14 +56,11 @@
             changeauth: function () {
                 this.$emit("changeauth");
             },
-
             login: function (formname) {
-                console.log(this.$refs[formname])
                 this.$refs[formname].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
+                        authapi.login(this.loginForm.username, this.loginForm.password,this.rememberme)
                     } else {
-                        console.log('error submit!!');
                         return false;
                     }
                 });

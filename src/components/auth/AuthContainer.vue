@@ -2,7 +2,7 @@
     <div class="authcontainer">
         <el-dialog title="欢迎来到HairLess" :visible.sync="authVisible" width="30%" :before-close="handleClose" center>
             <span></span>
-            <LoginForm v-if="showlogin" @changeauth="changeauth"></LoginForm>
+            <LoginForm v-if="showlogin" @changeauth="changeauth" ref="LoginForm"></LoginForm>
             <RegisterForm v-if="showregister" @changeauth="changeauth"></RegisterForm>
         </el-dialog>
     </div>
@@ -11,7 +11,8 @@
 <script>
     import Event from '../../plugins/event.js';
     import LoginForm from "./LoginForm";
-    import RegisterForm from './RegisterForm'
+    import RegisterForm from './RegisterForm';
+    import authapi from "../../api/authapi";
 
     export default {
         name: 'AuthContainer',
@@ -19,12 +20,16 @@
         props: {
             msg: String
         }, mounted() {
+            authapi.chechToken();
             var me = this;
-            Event.$on("showauth", function () {
-                console.log("showauth")
+            Event.$on("showauthdialog", function () {
                 me.authVisible = true;
+            });
+            Event.$on("hideauthdialog", function () {
+                me.authVisible = false;
+                me.$refs.LoginForm.loginForm.username="";
+                me.$refs.LoginForm.loginForm.password="";
             })
-
         },
         data() {
             return {
@@ -38,6 +43,7 @@
                 this.showregister = !this.showregister
             },
             handleClose: function (done) {
+                console.log(done)
                 this.showregister = false;
                 this.showlogin = true;
                 done();
