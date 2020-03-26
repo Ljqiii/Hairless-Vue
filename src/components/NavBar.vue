@@ -88,11 +88,10 @@
             }, search: function () {
 
             }, handleCommand(command) {
-                this.$message('click on item ' + command);
-
                 //退出登录
                 if (command == "logout") {
                     authapi.logout();
+                    this.$message("退出登录");
                 }
             }
         }
