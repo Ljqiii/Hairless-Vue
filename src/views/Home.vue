@@ -3,6 +3,7 @@
         <el-main>
             <p>{{this.$store.getters["authStore/gettestAuthTest"]}}</p>
             <button v-on:click="changeaa">s</button>
+            <button v-on:click="sendwsdata">sendws</button>
         </el-main>
     </div>
 </template>
@@ -11,6 +12,8 @@
     import NavBar from "../components/NavBar";
     import HelloWorld from '@/components/HelloWorld.vue'
     import testjs from "./testjs";
+    import Stomp from 'stompjs';
+    import ScokJs from 'sockjs-client';
 
     export default {
         name: 'Home',
@@ -23,12 +26,28 @@
                 return testjs.gettestText()
             }
         }, mounted() {
+            this.socket = new ScokJs('http://localhost:7084/ws')
+            this.stompClient = Stomp.over(this.socket);
+            var that = this;
+            this.stompClient.connect({}, function (frame) {
+                console.log(frame);
+
+                that.stompClient.subscribe("/topic/say", function (message) {
+                    console.log(message);
+                })
+            })
+
 
         }, data() {
             return {
                 text: this.$store.getters["authStore/gettestAuthTest"]
             }
         }, methods: {
+            sendwsdata: function () {
+
+                this.stompClient.send("/app/r", {}, JSON.stringify({'name': name}));
+
+            },
             changeaa: function () {
                 console.log(this)
                 this.$message({
