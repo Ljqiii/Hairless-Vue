@@ -57,7 +57,7 @@ function login(username, password, rememberme) {
             if (rememberme == true) {
                 localStorage.setItem("token", response.data["access_token"]);
             }
-            event.$emit("hideauthdialog");
+            event.$emit("loginsuccess");
             Message.success("登录成功");
         } else {
             store.commit("changeIsLogin", false);
@@ -69,6 +69,18 @@ function login(username, password, rememberme) {
     });
 }
 
+
+function getInfo() {
+    axios({
+        headers: {
+            Authorization: `Bearer ${AuthUtil.getAccessToken()}`
+        },
+        method: 'POST',
+        url: Url.withBase("/api/auth/me"),
+    })
+}
+
+
 //退出登录
 function logout() {
     // TODO: 后端 revoke token
@@ -78,5 +90,6 @@ function logout() {
 export default {
     chechToken: chechToken,
     login: login,
-    logout: logout
+    logout: logout,
+    getInfo: getInfo
 }

@@ -19,7 +19,7 @@ function getAccessToken() {
 
 function setAccessToken(accessToken) {
     store.commit("authStore/changeToken", accessToken);
-
+    sessionStorage.setItem("client_secret", accessToken);
 }
 
 export default {

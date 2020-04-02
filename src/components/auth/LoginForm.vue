@@ -27,7 +27,7 @@
 </template>
 
 <script>
-    import authapi from "../../api/authapi";
+    import authapi from "../../api/authApi";
 
     export default {
         name: 'LoginForm',

@@ -25,10 +25,20 @@
             </el-col>
 
             <el-col :span="7" class="userinfocol">
+                <!--未登录-->
                 <el-button style="width: 90px;" type="text" size="big" v-if="islogin==false" v-on:click="showlogin">登录
                 </el-button>
 
+                <!--已登录-->
+
+                <i class="el-icon-message-solid" style="font-size: 25px" v-if="islogin==true&&unreadNotificationNount==0"></i>
+
+                <el-badge :value="unreadNotificationNount" :max="99" class="item"  v-if="islogin==true&&unreadNotificationNount!=0">
+                    <i class="el-icon-message-solid" style="font-size: 25px"></i>
+                </el-badge>
+
                 <el-dropdown @command="handleCommand">
+
                     <el-button style="width: 90px;" type="text" class="el-dropdown-link">
                         <el-avatar size="small" v-if="avatar_url&&islogin==true"
                                    v-bind:src="avatar_url"></el-avatar>
@@ -54,7 +64,7 @@
 <script>
 
     import Event from '../plugins/event.js';
-    import authapi from "../api/authapi";
+    import authapi from "../api/authApi";
 
     export default {
         name: 'NavBar',
@@ -69,6 +79,8 @@
                 return this.$store.getters["authStore/getUserName"]
             }, avatar_url() {
                 return this.$store.getters["authStore/getAvatarUrl"]
+            }, unreadNotificationNount() {
+                return this.$store.getters.getUnreadNotificationCount;
             }
         },
         data() {

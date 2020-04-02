@@ -12,7 +12,7 @@
     import Event from '../../plugins/event.js';
     import LoginForm from "./LoginForm";
     import RegisterForm from './RegisterForm';
-    import authapi from "../../api/authapi";
+    import authapi from "../../api/authApi";
 
     export default {
         name: 'AuthContainer',
@@ -25,11 +25,14 @@
             Event.$on("showauthdialog", function () {
                 me.authVisible = true;
             });
-            Event.$on("hideauthdialog", function () {
-                me.authVisible = false;
-                me.$refs.LoginForm.loginForm.username="";
-                me.$refs.LoginForm.loginForm.password="";
+            Event.$on("loginsuccess", function () {
+               me.hideForm();
+            });
+
+            Event.$on("loginsuccess", function () {
+                console.log("login success")
             })
+
         },
         data() {
             return {
@@ -38,6 +41,11 @@
                 showregister: false
             }
         }, methods: {
+            hideForm:function(){
+                this.authVisible = false;
+                this.$refs.LoginForm.loginForm.username = "";
+                this.$refs.LoginForm.loginForm.password = "";
+            },
             changeauth: function () {
                 this.showlogin = !this.showlogin;
                 this.showregister = !this.showregister

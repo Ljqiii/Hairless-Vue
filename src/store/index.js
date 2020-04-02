@@ -13,10 +13,12 @@ export default new Vuex.Store({
     state: {
         baseurl: "http://127.0.0.1:7082/api",
         client_id: "browser",
-        client_secret: "",
-        scope:"ui",
+        client_secret: sessionStorage.getItem("client_secret"),
+        scope: "ui",
         testtext: "sdaf",
         islogin: false,
+
+        unreadNotificationCount: 0
     },
     getters: {
         getBaseurl(state) {
@@ -27,16 +29,19 @@ export default new Vuex.Store({
             return state.client_id;
         }, getClientSecret(state) {
             return state.client_secret;
-        },getIsLogin(state) {
+        }, getIsLogin(state) {
             return state.islogin;
+        }, getUnreadNotificationCount(state) {
+            return state.unreadNotificationCount;
         }
     },
     mutations: {
         changetestText(state, payload) {
             state.testtext = payload;
-        },changeIsLogin(state, payload) {
-            console.log("changeIsLogin"+payload)
+        }, changeIsLogin(state, payload) {
             state.islogin = payload;
+        }, changeUnreadNotificationCount(state, payload) {
+            state.unreadNotificationCount = payload;
         }
     },
     actions: {}
