@@ -4,6 +4,7 @@ export default {
         testAuthTest: "sadf",
         avatarUrl: '',
         userName: '',
+        nickName: '',
         isVip: false,
         token: localStorage.getItem("token")
     },
@@ -24,12 +25,16 @@ export default {
     mutations: {
         changeUserName(state, payload) {
             state.userName = payload;
+        }, changeNickName(state, payload) {
+            state.nickName = payload;
         }, changeIsVip(state, payload) {
             state.isVip = payload;
         }, changetestAuthTest(state, payload) {
             state.testAuthTest = payload;
         }, changeToken(state, payload) {
             state.token = payload;
+        }, changeAvatarUrl(state, payload) {
+            state.avatarUrl = payload;
         }
     }
 }

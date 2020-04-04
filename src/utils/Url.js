@@ -8,6 +8,15 @@ function withBase(url) {
     }
 }
 
+function withAuthBase(url) {
+    if (url.indexOf('/') === 0) {
+        return store.state.authbaseurl + url
+    } else {
+        return store.state.authbaseurl + '/' + url
+    }
+}
+
 export default {
-    withBase: withBase
+    withBase: withBase,
+    withAuthBase:withAuthBase
 }

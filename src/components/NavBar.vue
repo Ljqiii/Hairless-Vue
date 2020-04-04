@@ -73,7 +73,6 @@
         },
         computed: {
             islogin() {
-                console.log(this.$store.getters)
                 return this.$store.getters.getIsLogin;
             }, username() {
                 return this.$store.getters["authStore/getUserName"]

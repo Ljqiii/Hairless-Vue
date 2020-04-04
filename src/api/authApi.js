@@ -4,68 +4,69 @@ import {Message} from 'element-ui';
 import event from '../plugins/event';
 import AuthUtil from '../utils/AuthUtil'
 import Url from '../utils/Url'
+import notificationApi from "./notificationApi";
 
 
 //检查token过期
 function chechToken() {
-    axios({
-        auth: {
-            username: store.state.client_id,
-            password: store.state.client_secret
-        },
-        method: 'GET',
-        url: Url.withBase("/auth/oauth/check_token"),
-        params: {"token": AuthUtil.getAccessToken()}
-    }).then(function (response) {
-
-        if (response.data["error"] == null) {
-            AuthUtil.toLogin(response.data["user_name"]);
-            return true;
-        } else {
-            AuthUtil.toUnLogin();
-            return false;
-        }
-    }).catch(function (error) {
-        AuthUtil.toUnLogin();
-        console.log(error);
-
-        return false;
-    });
+    // axios({
+    //     auth: {
+    //         username: store.state.client_id,
+    //         password: store.state.client_secret
+    //     },
+    //     method: 'GET',
+    //     url: Url.withBase("/api/account/pointdetails")
+    // }).then(function (response) {
+    //
+    //     if (response.data["error"] == null) {
+    //         AuthUtil.toLogin(response.data["user_name"]);
+    //         return true;
+    //     } else {
+    //         AuthUtil.toUnLogin();
+    //         return false;
+    //     }
+    // }).catch(function (error) {
+    //     AuthUtil.toUnLogin();
+    //     console.log(error);
+    //
+    //     return false;
+    // });
 }
 
 //登录
 function login(username, password, rememberme) {
-    console.log("rememberme" + rememberme)
+    console.log("rememberme" + rememberme);
+
+    let data = new FormData();
+    data.append("username", username);
+    data.append("password", password);
+    data.append("remember-me", rememberme);
+
     axios({
-        auth: {
-            username: store.state.client_id,
-            password: store.state.client_secret
-        },
         method: 'POST',
-        url: Url.withBase("/auth/oauth/token"),
-        params: {
-            "username": username,
-            "password": password,
-            "scope": store.state.scope,
-            "grant_type": "password"
-        }
+        url: Url.withAuthBase("/login"),
+        data: data,
+        withCredentials: true
     }).then(function (response) {
-        console.log(response)
-        if (response.data["error"] == null) {
-            AuthUtil.setAccessToken(response.data["access_token"]);
-            chechToken();
-            if (rememberme == true) {
-                localStorage.setItem("token", response.data["access_token"]);
-            }
-            event.$emit("loginsuccess");
-            Message.success("登录成功");
-        } else {
-            store.commit("changeIsLogin", false);
-            Message.error("用户名或密码错误");
-        }
+        console.log(response);
+
+        axios.get(Url.withBase('/api/account/me'), {withCredentials: true, maxRedirects: 0})
+            .then(function (response) {
+                console.log(response)
+                AuthUtil.toLogin(response.data.data["username"]);
+                AuthUtil.setUserInfo(response.data.data["nickname"], response.data.data["isvip"], response.data.data["avatar"])
+                notificationApi.setUnreadNotificationCount(response.data.data["unReadNotificationCount"])
+            }).catch(function (error) {
+            console.log(error)
+        })
+
+        event.$emit("loginsuccess");
+        Message.success("登录成功");
 
     }).catch(function (error) {
         console.log(error)
+        store.commit("changeIsLogin", false);
+        Message.error("用户名或密码错误");
     });
 }
 
@@ -85,6 +86,14 @@ function getInfo() {
 function logout() {
     // TODO: 后端 revoke token
     AuthUtil.toUnLogin();
+    console.log("in logout func")
+
+    axios.post(Url.withAuthBase("/logout"), null, {withCredentials: true})
+        .then(function (response) {
+            console.log(response)
+        }).catch(function (error) {
+        console.log(error)
+    })
 }
 
 export default {

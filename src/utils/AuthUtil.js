@@ -13,6 +13,12 @@ function toLogin(username) {
     store.commit("changeIsLogin", true);
 }
 
+function setUserInfo(nickName,isVip,avatarUrl) {
+    store.commit("authStore/changeNickName", nickName);
+    store.commit("authStore/changeIsVip", isVip);
+    store.commit("authStore/changeAvatarUrl", avatarUrl);
+}
+
 function getAccessToken() {
     return store.getters["authStore/getToken"]
 }
@@ -26,5 +32,6 @@ export default {
     toUnLogin: toUnLogin,
     toLogin: toLogin,
     getAccessToken: getAccessToken,
-    setAccessToken: setAccessToken
+    setAccessToken: setAccessToken,
+    setUserInfo:setUserInfo
 }
