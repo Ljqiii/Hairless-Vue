@@ -7,7 +7,8 @@
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-                <el-input v-model="loginForm.password" class="registerinput" auto-complete="off" show-password></el-input>
+                <el-input v-model="loginForm.password" class="registerinput" auto-complete="off"
+                          show-password></el-input>
             </el-form-item>
 
             <p class="registertext">没有账号，
@@ -56,16 +57,18 @@
             changeauth: function () {
                 this.$emit("changeauth");
             },
-            login: function (formname) {
-                this.$refs[formname].validate((valid) => {
-                    if (valid) {
-                        authapi.login(this.loginForm.username, this.loginForm.password,this.rememberme)
-                    } else {
-                        return false;
-                    }
-                });
-
+            login: function () {
+                authapi.login(this.loginForm.username, this.loginForm.password, this.rememberme)
             }
+            // login: function (formname) {
+            //     this.$refs[formname].validate((valid) => {
+            //         if (valid) {
+            //             authapi.login(this.loginForm.username, this.loginForm.password, this.rememberme)
+            //         } else {
+            //             return false;
+            //         }
+            //     });
+            // }
         }
     }
 </script>

@@ -26,14 +26,22 @@
 
             <el-col :span="7" class="userinfocol">
                 <!--未登录-->
-                <el-button style="width: 90px;" type="text" size="big" v-if="islogin==false" v-on:click="showlogin">登录
+                <el-button type="text" size="big" v-if="islogin==false" v-on:click="redirecttologin">登录
                 </el-button>
+
+                <span v-if="islogin==false">/</span>
+
+                <el-button type="text" size="big" v-if="islogin==false" v-on:click="showlogin">注册
+                </el-button>
+
 
                 <!--已登录-->
 
-                <i class="el-icon-message-solid" style="font-size: 25px" v-if="islogin==true&&unreadNotificationNount==0"></i>
+                <i class="el-icon-message-solid" style="font-size: 25px"
+                   v-if="islogin==true&&unreadNotificationNount==0"></i>
 
-                <el-badge :value="unreadNotificationNount" :max="99" class="item"  v-if="islogin==true&&unreadNotificationNount!=0">
+                <el-badge :value="unreadNotificationNount" :max="99" class="item"
+                          v-if="islogin==true&&unreadNotificationNount!=0">
                     <i class="el-icon-message-solid" style="font-size: 25px"></i>
                 </el-badge>
 
@@ -104,7 +112,10 @@
                     authapi.logout();
                     this.$message("退出登录");
                 }
+            }, redirecttologin: function () {
+                authapi.login()
             }
+
         }
     }
 </script>

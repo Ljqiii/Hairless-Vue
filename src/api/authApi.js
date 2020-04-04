@@ -1,7 +1,7 @@
 import axios from "axios";
-import store from "../store";
-import {Message} from 'element-ui';
-import event from '../plugins/event';
+// import store from "../store";
+// import {Message} from 'element-ui';
+// import event from '../plugins/event';
 import AuthUtil from '../utils/AuthUtil'
 import Url from '../utils/Url'
 import notificationApi from "./notificationApi";
@@ -9,6 +9,10 @@ import notificationApi from "./notificationApi";
 
 //检查token过期
 function chechToken() {
+
+    loadUserInfo();
+
+
     // axios({
     //     auth: {
     //         username: store.state.client_id,
@@ -42,32 +46,23 @@ function login(username, password, rememberme) {
     data.append("password", password);
     data.append("remember-me", rememberme);
 
-    axios({
-        method: 'POST',
-        url: Url.withAuthBase("/login"),
-        data: data,
-        withCredentials: true
-    }).then(function (response) {
-        console.log(response);
+    window.location = "/oauth2/authorization/gateway"
 
-        axios.get(Url.withBase('/api/account/me'), {withCredentials: true, maxRedirects: 0})
-            .then(function (response) {
-                console.log(response)
-                AuthUtil.toLogin(response.data.data["username"]);
-                AuthUtil.setUserInfo(response.data.data["nickname"], response.data.data["isvip"], response.data.data["avatar"])
-                notificationApi.setUnreadNotificationCount(response.data.data["unReadNotificationCount"])
-            }).catch(function (error) {
-            console.log(error)
-        })
+    //TODO: spring cloud security 没有sso，跳转链接
+}
 
-        event.$emit("loginsuccess");
-        Message.success("登录成功");
+function loadUserInfo() {
 
-    }).catch(function (error) {
+    axios.get(Url.withBase('/api/account/me'), {withCredentials: true, maxRedirects: 0})
+        .then(function (response) {
+            console.log(response)
+            AuthUtil.toLogin(response.data.data["username"]);
+            AuthUtil.setUserInfo(response.data.data["nickname"], response.data.data["isvip"], response.data.data["avatar"])
+            notificationApi.setUnreadNotificationCount(response.data.data["unReadNotificationCount"])
+        }).catch(function (error) {
         console.log(error)
-        store.commit("changeIsLogin", false);
-        Message.error("用户名或密码错误");
-    });
+    })
+
 }
 
 
@@ -100,5 +95,6 @@ export default {
     chechToken: chechToken,
     login: login,
     logout: logout,
-    getInfo: getInfo
+    getInfo: getInfo,
+    loadUserInfo: loadUserInfo
 }
