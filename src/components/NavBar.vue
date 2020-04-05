@@ -10,7 +10,7 @@
                 <el-button type="text" class="title" v-on:click="routeto('/')">Hairless</el-button>
 
                 <el-button class="tabitem" type="text" v-on:click="routeto('/')">首页</el-button>
-                <el-button class="tabitem" type="text">题库</el-button>
+                <el-button class="tabitem" type="text" v-on:click="routeto('/problemset')">题库</el-button>
                 <el-button class="tabitem" type="text">讨论区</el-button>
                 <el-button class="tabitem" type="text">竞赛</el-button>
                 <el-button class="tabitem" type="text">会员</el-button>
