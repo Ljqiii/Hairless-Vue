@@ -46,6 +46,9 @@
                                 <template v-slot="scope">
                                     <i style="padding-left: 20px" class="el-icon-check"
                                        v-if="scope.row.isResolve==true"></i>
+                                    <i style="padding-left: 20px" class="el-icon-close"
+                                       v-if="scope.row.isResolve==false"></i>
+
                                 </template>
                             </el-table-column>
 
