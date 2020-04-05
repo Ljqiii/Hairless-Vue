@@ -97,7 +97,31 @@
 
                 </el-col>
 
-                <el-col :span="6">
+                <el-col style="margin-left: 30px" :span="6">
+
+                    <el-card class="box-card" style="width: 300px">
+                        <div slot="header" class="clearfix">
+                            <span style="font-weight: bold">解题排行榜</span>
+                        </div>
+                        <div v-for="item in correctleaderboard" :key="item.id">
+
+
+                            <div style="display: flex;justify-content:space-between ;flex-direction: row;align-items: center;margin-bottom: 10px"
+                                 type="text" class="el-dropdown-link">
+                                <div style="display: flex;flex-direction: row;align-items: center;margin-left: 10px">
+                                    <el-avatar  size="small" v-if="item.avatar"
+                                               v-bind:src="item.avatar"></el-avatar>
+                                    <el-avatar size="small" v-else>{{item.username}}</el-avatar>
+                                    <div style="margin-left: 12px">{{item.username}}</div>
+
+                                </div>
+                                <div style="margin-right: 15px">{{item.successCount}}</div>
+                            </div>
+
+
+                        </div>
+                    </el-card>
+
 
                 </el-col>
 
@@ -134,13 +158,15 @@
             this.getcurrentcategory();
             this.getcategorylist();
             this.getproblemlist();
+            this.getcorrectleaderboard();
         }, data() {
             return {
                 currentcategoryname: '',
                 categorylist: [],
                 problemlist: [],
                 currentpage: null,
-                total: 0
+                total: 0,
+                correctleaderboard: []
             }
         }, methods: {
             //获得当前分类名称
@@ -202,8 +228,19 @@
                 this.$router.push("/problem/" + row.id)
 
             },
+            //换页
             changeproblemlistpage: function (val) {
                 this.getproblemlist(val, null, this.$route.params["category"])
+            },
+            //排行榜
+            getcorrectleaderboard: function () {
+                var me = this;
+                axios.get(Url.withBase("/api/correctleaderboard"), {}).then(function (response) {
+                    console.log(response)
+                    me.correctleaderboard = response.data.data;
+                }).catch(function (error) {
+                    console.log(error)
+                })
             }
 
         }
