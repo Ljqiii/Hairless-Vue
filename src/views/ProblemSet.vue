@@ -96,9 +96,9 @@
                     </div>
 
                 </el-col>
-
+                <!--                右边栏-->
                 <el-col style="margin-left: 30px" :span="6">
-
+                    <!--排行榜            -->
                     <el-card class="box-card" style="width: 300px">
                         <div slot="header" class="clearfix">
                             <span style="font-weight: bold">解题排行榜</span>
@@ -109,7 +109,7 @@
                             <div style="display: flex;justify-content:space-between ;flex-direction: row;align-items: center;margin-bottom: 10px"
                                  type="text" class="el-dropdown-link">
                                 <div style="display: flex;flex-direction: row;align-items: center;margin-left: 10px">
-                                    <el-avatar  size="small" v-if="item.avatar"
+                                    <el-avatar size="small" v-if="item.avatar"
                                                v-bind:src="item.avatar"></el-avatar>
                                     <el-avatar size="small" v-else>{{item.username}}</el-avatar>
                                     <div style="margin-left: 12px">{{item.username}}</div>
@@ -117,9 +117,18 @@
                                 </div>
                                 <div style="margin-right: 15px">{{item.successCount}}</div>
                             </div>
-
-
                         </div>
+                    </el-card>
+
+                    <!--正确率            -->
+                    <el-card class="box-card" style="width: 300px;margin-top: 30px;">
+                        <div slot="header" class="clearfix">
+                            <span style="font-weight: bold">正确率</span>
+                        </div>
+
+                        <ECharts style="margin-top: -30px" :options="orgOptions" :auto-resize="false"></ECharts>
+
+
                     </el-card>
 
 
@@ -136,10 +145,15 @@
 <script>
     import axios from "axios";
     import Url from "../utils/Url";
+    import ECharts from 'vue-echarts'
+    import echarts from 'echarts'
 
     export default {
         name: 'ProblemSet',
-        components: {}, computed: {
+        components: {
+            ECharts,
+            echarts
+        }, computed: {
             convertComplexity() {
                 return function (complexity) {
                     if (complexity == "easy") {
@@ -155,6 +169,7 @@
             }
 
         }, mounted() {
+            this.getAccuracyDate();
             this.getcurrentcategory();
             this.getcategorylist();
             this.getproblemlist();
@@ -166,7 +181,33 @@
                 problemlist: [],
                 currentpage: null,
                 total: 0,
-                correctleaderboard: []
+                correctleaderboard: [],
+                orgOptions: {
+                    tooltip: {
+                        formatter: function (params) {
+                            return  '<span style="font-size:13px">' + params.name + ": " + params.value + '</span>';
+                        },
+                    }, legend: {
+                        orient: "horizontal",
+                        x: "center",
+                        y: "bottom",
+                        data: ["正确", "错误"]
+                    },
+                    series:
+                        [{
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data: [
+                                {value: 0, name: '正确'},
+                                {value: 0, name: '错误'}
+                            ],
+                            color: ['#ff7f50', '#87cefa'],
+                            type: 'pie'
+                        }]
+                }
             }
         }, methods: {
             //获得当前分类名称
@@ -241,8 +282,17 @@
                 }).catch(function (error) {
                     console.log(error)
                 })
+            },
+            //正确率
+            getAccuracyDate: function () {
+                var me = this;
+                axios.get(Url.withBase("/api/accuracy"), {}).then(function (response) {
+                    console.log(response)
+                    me.orgOptions.series[0].data = response.data.data;
+                }).catch(function (error) {
+                    console.log(error)
+                })
             }
-
         }
     }
 </script>
@@ -250,6 +300,11 @@
 <style scoped lang="scss">
     .el-pager li {
         background: none !important;
+    }
+
+    .echarts {
+        width: 260px;
+        height: 300px;
     }
 
 </style>
