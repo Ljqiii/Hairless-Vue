@@ -2,7 +2,7 @@
     <div class="about">
         <h1>{{this.$route.params["problemid"]}}</h1>
         <el-row>
-            <el-col span="8" style="padding-left: 10px">
+            <el-col :span="8" style="padding-left: 10px">
                 <el-tabs v-model="tabActiveName" @tab-click="handleTabClick">
                     <el-tab-pane label="题目描述" name="description">
                         <span slot="label"><i class="el-icon-date"></i> 题目描述</span>
@@ -13,7 +13,7 @@
                     <el-tab-pane label="题解" name="answer">题解</el-tab-pane>
                 </el-tabs>
             </el-col>
-            <el-col span="16" style="background: azure">sdf</el-col>
+            <el-col :span="16" style="background: azure">sdf</el-col>
         </el-row>
 
 
