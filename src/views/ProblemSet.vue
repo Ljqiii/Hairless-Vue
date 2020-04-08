@@ -84,6 +84,13 @@
                             </el-table-column>
 
                             <el-table-column
+                                    label="正确率">
+                                <template slot-scope="scope">
+                                    {{convertComplexity(scope.row.acceptance)}}
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column
                                     prop="discusscount"
                                     label="讨论">
                             </el-table-column>
