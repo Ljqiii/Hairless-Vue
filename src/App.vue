@@ -6,7 +6,7 @@
                 <NavBar></NavBar>
             </el-header>
             <router-view></router-view>
-            <el-footer>
+            <el-footer  v-if="showFooter">
                 <Footer></Footer>
             </el-footer>
         </el-container>
@@ -27,14 +27,17 @@
             HelloWorld,
             NavBar,
             Footer
-        },methods:{
-
+        }, methods: {}, computed: {
+            showFooter() {
+                //问题页面时候不显示底部
+                return this.$route.path.match(/\/problem\/\d+/) == null ? true : false
+            }
         }
     }
 </script>
 
 <style>
-    body{
+    body {
         background-color: #f8f8f8;
     }
 
@@ -45,10 +48,12 @@
         text-align: center;
         color: #2c3e50;
     }
+
     /*去掉el-header的padding*/
-    .el-header{
+    .el-header {
         padding: 0px !important;
     }
+
     #nav {
         padding: 30px;
     }

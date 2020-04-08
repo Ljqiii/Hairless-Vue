@@ -1,7 +1,7 @@
 <template>
     <div style="margin-top: 7px">
         <div style="display: flex;justify-content: flex-start;font-weight: bold;font-size: 20px;margin-bottom: 7px">
-            # {{problem["id"]}}
+            #{{problem["id"]}}
             <span style="font-weight: normal;margin-left: 7px">{{problem["title"]}}</span>
         </div>
 
@@ -11,8 +11,8 @@
 
             <span style="margin-left: 15px">
                 <el-button type="text" v-on:click="favorite">
-                    <i class="el-icon-star-on" v-if="islike" style="font-size: 17px"></i>
-                    <i class="el-icon-star-off" v-if="islike==false" style="font-size: 17px"></i>
+                    <i class="el-icon-star-on" v-if="currentUserLike" style="font-size: 17px"></i>
+                    <i class="el-icon-star-off" v-if="currentUserLike==false" style="font-size: 17px"></i>
                 </el-button>
             </span>
 
@@ -25,7 +25,7 @@
             </span>
 
             <span style="margin-left: 7px">
-                {{problem["sumbitedcount"]}}
+                {{problem["sumbitedCount"]}}
             </span>
 
             <span style="margin-left: 17px">
@@ -37,10 +37,10 @@
             </span>
 
         </div>
-        <el-divider></el-divider>
+        <div style="background-color: #DCDFE6;margin: 1px 0px;height: 1px;"></div>
 
         <!--        内容-->
-        <div v-html="convertToMarkDown" style="text-align: left">
+        <div ref="problemdescriptioncontent" :style="problemdescriptioncontentstyle" v-html="convertToMarkDown">
 
         </div>
 
@@ -58,7 +58,7 @@
                 <div v-for="item in favoritefolderlist" :key="item.id" style="margin-bottom: 12px">
 
                     <el-checkbox :label="item.id==null?null:item.id"
-                                 :checked="problemFavoriteFolderLists.indexOf(item.id)!=-1 ">
+                                 :checked="currentProblemFavoriteFolderLists.indexOf(item.id)!=-1 ">
                         {{item.name}}
                         <span v-if="!item.isPublic" style="color: #a5a5a5">[私密]</span>
                     </el-checkbox>
@@ -82,23 +82,45 @@
     export default {
         name: 'ProblemDescription',
         components: {},
+        mounted() {
+            this.problemdescriptioncontentheight = window.innerHeight - this.$refs.problemdescriptioncontent.getBoundingClientRect().y;
+            var me = this;
+            window.onresize = () => {
+                me.problemdescriptioncontentheight = window.innerHeight - me.$refs.problemdescriptioncontent.getBoundingClientRect().y;
+            }
+        },
         props: {
             problem: Object
         },
         computed: {
+            problemdescriptioncontentstyle() {
+                let a = "overflow: auto;text-align: left;height: " + this.problemdescriptioncontentheight + "px";
+                return a;
+            },
+            problemlikecount() {
+                return this.problem["favoriteCount"]
+            },
+            currentUserLike() {
+                return this.problem['like']
+            },
             convertToMarkDown() {
-                return mavonEditor.markdownIt.render("# dsa")
+                return mavonEditor.markdownIt.render(this.problem["description"] == null ? "" : this.problem["description"])
+            },
+            currentProblemFavoriteFolderLists() {
+                return this.problemFavoriteFolderLists
             }
+
         },
         data() {
             return {
-                problemlikecount: this.problem["like"],
+                problemdescriptioncontentheight: 0,
                 problemFavoriteFolderLists: [],
                 favoriteFolderCheckList: [],
                 favoritefolderlist: [],
                 favoriteDialogVisible: false,
-                islike: this.problem['islike'],
-                input: ''
+                islike: this.problem['like'],
+                input: '',
+                problemCode: this.problem["initProblemCode"]
             }
         }, filters: {
             convertComplexity: function (value) {
@@ -114,19 +136,20 @@
             }
         },
         methods: {
+
             //收藏确定按钮
             changefavorite() {
                 var me = this;
                 this.favoriteDialogVisible = false;
-                if (this.islike && (this.favoriteFolderCheckList == 0)) {
-                    this.problemlikecount = this.problemlikecount - 1;
+                if (this.problem['like'] && (this.favoriteFolderCheckList == 0)) {
+                    this.problem.favoriteCount = this.problem.favoriteCount - 1;
                 }
 
-                if (!this.islike && (this.favoriteFolderCheckList != 0)) {
-                    this.problemlikecount = this.problemlikecount + 1;
+                if (!this.problem['like'] && (this.favoriteFolderCheckList != 0)) {
+                    this.problem.favoriteCount = this.problem.favoriteCount + 1;
                 }
 
-                this.favoriteFolderCheckList == 0 ? this.islike = false : this.islike = true;
+                this.favoriteFolderCheckList == 0 ? this.problem['like'] = false : this.problem['like'] = true;
                 axios.post(Url.withBase("/api/favoriteproblem"), {
                         problemid: me.problem["id"],
                         favoriteFolderList: me.favoriteFolderCheckList
@@ -135,7 +158,7 @@
                         withCredentials: true
                     }
                 ).then(function (response) {
-                    console.log(response)
+                    response
                 }).catch(function (error) {
                     console.log(error)
                 })
@@ -162,12 +185,6 @@
                 }).catch(function (error) {
                     console.log(error)
                 })
-
-
-            },
-            testckick() {
-                console.log(23423);
-                this.input = "dsfa"
             }
         }
     }
