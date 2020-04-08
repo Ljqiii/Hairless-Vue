@@ -40,9 +40,11 @@
         <div style="background-color: #DCDFE6;margin: 1px 0px;height: 1px;"></div>
 
         <!--        内容-->
-        <div ref="problemdescriptioncontent" :style="problemdescriptioncontentstyle" v-html="convertToMarkDown">
+        <vue-custom-scrollbar :style="problemdescriptioncontentstyle" settings="maxScrollbarLength: 60">
+            <div ref="problemdescriptioncontent" v-html="convertToMarkDown" style="margin-bottom: 80px;margin-right: 10px">
 
-        </div>
+            </div>
+        </vue-custom-scrollbar>
 
         <!--        收藏弹窗-->
 
@@ -78,10 +80,13 @@
     import mavonEditor from "mavon-editor";
     import axios from "axios";
     import Url from "../../utils/Url";
+    import vueCustomScrollbar from 'vue-custom-scrollbar'
 
     export default {
         name: 'ProblemDescription',
-        components: {},
+        components: {
+            vueCustomScrollbar
+        },
         mounted() {
             this.problemdescriptioncontentheight = window.innerHeight - this.$refs.problemdescriptioncontent.getBoundingClientRect().y;
             var me = this;
