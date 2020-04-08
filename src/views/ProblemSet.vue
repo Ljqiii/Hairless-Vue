@@ -42,13 +42,24 @@
                                 style="width: 100%">
                             <el-table-column
                                     label=""
-                                    width="110">
+                                    width="90">
                                 <template v-slot="scope">
                                     <i style="padding-left: 20px" class="el-icon-check"
                                        v-if="scope.row.isResolve==true"></i>
                                     <i style="padding-left: 20px" class="el-icon-close"
                                        v-if="scope.row.isResolve==false"></i>
 
+                                </template>
+                            </el-table-column>
+
+                            <!--                            vip-->
+                            <el-table-column
+                                    width="30">
+                                <template slot-scope="scope">
+                                    <div style="display: flex;flex-direction: row;justify-content: center;align-items: center">
+                                        <img :src="require('@/assets/vip.svg')" style="width: 17px;"
+                                             v-if="scope.row.onlyVip==true"/>
+                                    </div>
                                 </template>
                             </el-table-column>
 
@@ -147,6 +158,7 @@
     import Url from "../utils/Url";
     import ECharts from 'vue-echarts'
     import echarts from 'echarts'
+    import AuthUtil from '../utils/AuthUtil'
 
     export default {
         name: 'ProblemSet',
@@ -185,7 +197,7 @@
                 orgOptions: {
                     tooltip: {
                         formatter: function (params) {
-                            return  '<span style="font-size:13px">' + params.name + ": " + params.value + '</span>';
+                            return '<span style="font-size:13px">' + params.name + ": " + params.value + '</span>';
                         },
                     }, legend: {
                         orient: "horizontal",
@@ -266,7 +278,17 @@
             },
             //跳转到问题页面
             redirectToProbvlem: function (row) {
-                this.$router.push("/problem/" + row.id)
+                let vipOnly = row.onlyVip;
+                if (!vipOnly) {
+                    this.$router.push("/problem/" + row.id)
+                } else if (vipOnly && AuthUtil.isVip()) {
+                    this.$router.push("/problem/" + row.id)
+                } else {
+                    this.$message({
+                        message: '仅Vip可以查看此题目',
+                        type: 'warning'
+                    });
+                }
 
             },
             //换页
