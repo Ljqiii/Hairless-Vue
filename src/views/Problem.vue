@@ -3,7 +3,7 @@
         <!--        <h1>{{this.$route.params["problemid"]}}</h1>-->
         <el-row>
             <el-col :span="7" :style="{height:problemstyleheight,paddingLeft:'15px',backgroundColor:'white'}">
-                <el-tabs v-model="tabActiveName" @tab-click="handleTabClick" >
+                <el-tabs v-model="tabActiveName" @tab-click="handleTabClick">
                     <el-tab-pane label="题目描述" name="description">
                         <span slot="label"><i class="el-icon-date"></i> 题目描述</span>
                         <ProblemDescription v-bind:problem="problem"></ProblemDescription>
@@ -13,16 +13,9 @@
                     <el-tab-pane label="题解" name="answer">题解</el-tab-pane>
                 </el-tabs>
             </el-col>
-            <el-col :span="5" ref="problemdescriptioncontent" style="background-color: azure">
-                <vue-custom-scrollbar :style="{height:problemstyleheight}">
+            <el-col :span="17" ref="problemdescriptioncontent" style="background-color: azure"
+                    :style="{height:problemstyleheight}">
                     <ProblemCodeContent :codetree="problem.initProblemCode"></ProblemCodeContent>
-                </vue-custom-scrollbar>
-            </el-col>
-            <el-col :span="12" :style="{height:problemstyleheight}">
-                <div style="height: 100%;width: auto;background-color: #DCDFE6">
-
-
-                </div>
             </el-col>
         </el-row>
 

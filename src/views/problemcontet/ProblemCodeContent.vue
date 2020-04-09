@@ -1,57 +1,77 @@
 <template>
-    <div>
+    <div style="height: 100%;">
 
-        <el-tree
-                @node-click="handleNodeClick"
-                :data="codetree"
-                node-key="id"
-                :props="defaultProps"
-                default-expand-all
-                :expand-on-click-node="false">
-      <span class="custom-tree-node" slot-scope="{ node, data }">
+        <el-row style="height: 100%;">
+            <!--            代码树-->
+            <el-col :span="7" style="height: 100%;">
+                <vue-custom-scrollbar style="height: 100%;" data-name="scrollbar">
+                    <el-tree
+                            @node-click="handleNodeClick"
+                            :data="codetree"
+                            node-key="id"
+                            :props="defaultProps"
+                            default-expand-all
+                            :expand-on-click-node="false">
+                          <span class="custom-tree-node" slot-scope="{ node, data }">
 
-<!--          文件，文件夹图标-->
-          <img :src="require('@/assets/file.svg')" v-if="node.data.type=='file'"
-               style="height: 12px;margin-right: 3px "/>
-          <img :src="require('@/assets/folder.svg')" v-if="node.data.type=='folder'"
-               style="height: 12px;margin-right: 3px "/>
+                    <!--          文件，文件夹图标-->
+                              <img :src="require('@/assets/file.svg')" v-if="node.data.type=='file'"
+                                   style="height: 12px;margin-right: 5px "/>
+                              <img :src="require('@/assets/folder.svg')" v-if="node.data.type=='folder'"
+                                   style="height: 12px;margin-right: 5px "/>
 
 
-          <span v-if="node.data.editing==null||node.data.editing==false">{{ node.label}}</span>
-          <input v-if="node.data.editing==true" v-model="node.label" @blur="node.data.editing=false" autofocus/>
+                              <span v-if="node.data.editing==null||node.data.editing==false">{{ node.label}}</span>
+                              <input v-if="node.data.editing==true" v-model="node.label" @blur="node.data.editing=false"
+                                     autofocus/>
 
-        <span v-if="node.data.type=='folder'">
-          <el-button
-                  type="text"
-                  size="mini"
-                  @click="() => appendFile(data)">
-            +File
-          </el-button>
-            <el-button
-                    type="text"
-                    size="mini"
-                    @click="() => appendFolder(data)">
-            +Folder
-          </el-button>
-          <el-button
-                  type="text"
-                  size="mini"
-                  @click="() => remove(node, data)">
-            -
-          </el-button>
-        </span>
-      </span>
-        </el-tree>
+                            <span v-if="node.data.type=='folder'">
+                              <el-button
+                                      type="text"
+                                      size="mini"
+                                      @click="() => appendFile(data)">
+                                +File
+                              </el-button>
+                                <el-button
+                                        type="text"
+                                        size="mini"
+                                        @click="() => appendFolder(data)">
+                                +Folder
+                              </el-button>
+                              <el-button
+                                      type="text"
+                                      size="mini"
+                                      @click="() => remove(node, data)">
+                                -
+                              </el-button>
+                            </span>
+                          </span>
+                    </el-tree>
+                </vue-custom-scrollbar>
+            </el-col>
+            <!--            编辑器-->
+            <el-col :span="17" style="height: 100%;">
+
+
+
+
+            </el-col>
+
+        </el-row>
     </div>
 </template>
 
 <script>
+    import vueCustomScrollbar from 'vue-custom-scrollbar'
+
     export default {
         props: {
             codetree: Array
         },
         name: 'ProblemCodeContent',
-        components: {},
+        components: {
+            vueCustomScrollbar
+        },
         data() {
             return {
                 defaultProps: {
