@@ -1,5 +1,6 @@
 <template>
-    <div style="margin-top: 7px">
+    <div :style="{margintosh: '7px',display:'flex',flexDirection: 'column',height: problemdescriptioncontentstyle}" ref="problemdescriptioncontent">
+
         <div style="display: flex;justify-content: flex-start;font-weight: bold;font-size: 20px;margin-bottom: 7px">
             #{{problem["id"]}}
             <span style="font-weight: normal;margin-left: 7px">{{problem["title"]}}</span>
@@ -40,14 +41,16 @@
         <div style="background-color: #DCDFE6;margin: 1px 0px;height: 1px;"></div>
 
         <!--        内容-->
-        <vue-custom-scrollbar :style="problemdescriptioncontentstyle" settings="maxScrollbarLength: 60">
-            <div ref="problemdescriptioncontent" v-html="convertToMarkDown" style="margin-bottom: 80px;margin-right: 10px">
+        <div></div>
+
+        <vue-custom-scrollbar :style="{}" settings="maxScrollbarLength: 60">
+            <div v-html="convertToMarkDown" style="margin-bottom: 80px;margin-right: 10px">
 
             </div>
         </vue-custom-scrollbar>
 
-        <!--        收藏弹窗-->
 
+        <!--        收藏弹窗-->
         <el-dialog
                 title="添加到收藏夹"
                 :visible.sync="favoriteDialogVisible"
@@ -88,18 +91,19 @@
             vueCustomScrollbar
         },
         mounted() {
-            this.problemdescriptioncontentheight = window.innerHeight - this.$refs.problemdescriptioncontent.getBoundingClientRect().y;
+            this.problemdescriptioncontentheight = window.innerHeight-50 - this.$refs.problemdescriptioncontent.getBoundingClientRect().y;
             var me = this;
-            window.onresize = () => {
+            window.addEventListener("resize", () => {
                 me.problemdescriptioncontentheight = window.innerHeight - me.$refs.problemdescriptioncontent.getBoundingClientRect().y;
-            }
+            });
         },
         props: {
             problem: Object
         },
+        watch: {},
         computed: {
             problemdescriptioncontentstyle() {
-                let a = "overflow: auto;text-align: left;height: " + this.problemdescriptioncontentheight + "px";
+                let a = this.problemdescriptioncontentheight + "px";
                 return a;
             },
             problemlikecount() {
@@ -141,8 +145,9 @@
             }
         },
         methods: {
-
-            //收藏确定按钮
+            refreshHeight() {
+                this.problemdescriptioncontentheight = window.innerHeight - this.$refs.problemdescriptioncontent.getBoundingClientRect().y;
+            }, //收藏确定按钮
             changefavorite() {
                 var me = this;
                 this.favoriteDialogVisible = false;
