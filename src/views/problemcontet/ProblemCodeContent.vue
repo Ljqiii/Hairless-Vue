@@ -3,7 +3,7 @@
 
         <el-row style="height: 100%;">
             <!--            代码树-->
-            <el-col :span="7" style="height: 100%;">
+            <el-col :span="5" style="height: 100%;background-color: white;">
                 <vue-custom-scrollbar style="height: 100%;" data-name="scrollbar">
                     <el-tree
                             @node-click="handleNodeClick"
@@ -50,10 +50,22 @@
                 </vue-custom-scrollbar>
             </el-col>
             <!--            编辑器-->
-            <el-col :span="17" style="height: 100%;">
+            <el-col :span="19" style="height: 100%;display: flex;flex-direction: column;border-left: 1px solid #E0E3EA">
 
+                <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab" class="eltab"
+                         style="background-color: white">
+                    <el-tab-pane
+                            v-for="(item, index) in opendTabs"
+                            :key="item.filename"
+                            :label="item.filename"
+                            :name="item.filename"
+                    >
+                        {{item.content}}
+                    </el-tab-pane>
+                </el-tabs>
 
-
+                <codemirror v-model="currentFile.content" :options="cmOptions" style="text-align: left;"
+                            class="CodeMirror"/>
 
             </el-col>
 
@@ -63,6 +75,9 @@
 
 <script>
     import vueCustomScrollbar from 'vue-custom-scrollbar'
+    import {codemirror} from 'vue-codemirror'
+    import 'codemirror/lib/codemirror.css'
+
 
     export default {
         props: {
@@ -70,10 +85,63 @@
         },
         name: 'ProblemCodeContent',
         components: {
+            codemirror,
             vueCustomScrollbar
+        }, computed: {
+            codemirror() {
+                return this.$refs.cmEditor.codemirror
+            }
         },
         data() {
             return {
+                currentFile: {content: ""},
+                currentTabName: '',
+                opendTabs: [],
+                editableTabsValue: '2',
+                editableTabs: [{
+                    title: 'Tab 1',
+                    name: '1',
+                    content: 'Tab 1 content'
+                }, {
+                    title: 'Tab 2',
+                    name: '2',
+                    content: 'Tab 2 content'
+                }],
+
+                code: 'import com.demo.util.MyType;\n' +
+                    'import com.demo.util.MyInterface;\n' +
+                    '\n' +
+                    'public enum Enum {\n' +
+                    '  VAL1, VAL2, VAL3\n' +
+                    '}\n' +
+                    '\n' +
+                    'public class Class<T, V> implements MyInterface {\n' +
+                    '  public static final MyType<T, V> member;\n' +
+                    '  \n' +
+                    '  private class InnerClass {\n' +
+                    '    public int zero() {\n' +
+                    '      return 0;\n' +
+                    '    }\n' +
+                    '  }\n' +
+                    '\n' +
+                    '  @Override\n' +
+                    '  public MyType method() {\n' +
+                    '    return member;\n' +
+                    '  }\n' +
+                    '\n' +
+                    '  public void method2(MyType<T, V> value) {\n' +
+                    '    method();\n' +
+                    '    value.method3();\n' +
+                    '    member = value;\n' +
+                    '  }\n' +
+                    '}\n',
+                cmOptions: {
+                    tabSize: 4,
+                    mode: 'text/java',
+                    theme: 'paraiso-light',
+                    lineNumbers: true,
+                    line: true,
+                },
                 defaultProps: {
                     children: 'children',
                     label: 'filename'
@@ -82,6 +150,23 @@
             }
         },
         methods: {
+            removeTab(targetName) {
+                let tabs = this.editableTabs;
+                let activeName = this.editableTabsValue;
+                if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                        if (tab.name === targetName) {
+                            let nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
+                            }
+                        }
+                    });
+                }
+
+                this.editableTabsValue = activeName;
+                this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+            },
             appendFolder(data) {
                 data.children.push({
                     type: "folder",
@@ -104,10 +189,36 @@
             handleNodeClick(data) {
                 console.log("data: ");
                 console.log(data);
-                console.log("codetree: ");
-                console.log(this.codetree);
+
+                this.currentFile = data;
+
+                if (data.type == 'file' && this.opendTabs.indexOf(data) == -1) {
+                    this.opendTabs.push(data)
+                }
+
+                // console.log("codetree: ");
+                // console.log(this.codetree);
             }
         }
     }
 
 </script>
+
+<style lang="scss">
+    .CodeMirror {
+        flex: 1;
+        height: 100%;
+    }
+
+    .eltab {
+        .el-tabs__header {
+            margin: 0px;
+        }
+
+        .el-tabs__item {
+            height: 30px;
+            line-height: 30px;
+        }
+    }
+</style>
+
