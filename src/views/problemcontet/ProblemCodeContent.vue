@@ -220,5 +220,11 @@
             line-height: 30px;
         }
     }
+
+    .el-tree > .el-tree-node {
+        min-width: 100%;
+        display: inline-block;
+    }
+
 </style>
 
