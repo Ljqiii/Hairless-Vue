@@ -36,7 +36,7 @@
                     <div>
                         <el-button icon="el-icon-caret-right" size="medium" type="primary"
                                    style="margin-right: 20px;padding-left: 7px;padding-right: 11px;"
-                                   v-on:click="null">
+                                   v-on:click="1">
                             提交执行
                         </el-button>
                     </div>

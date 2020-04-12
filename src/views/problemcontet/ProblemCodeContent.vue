@@ -78,6 +78,23 @@
     import {codemirror} from 'vue-codemirror'
     import 'codemirror/lib/codemirror.css'
 
+    //mode
+    import 'codemirror/mode/clike/clike.js'
+
+
+    //theme
+    import 'codemirror/theme/idea.css'
+
+    // foldGutter
+    import 'codemirror/addon/fold/foldgutter.css'
+    import 'codemirror/addon/fold/brace-fold.js'
+    import 'codemirror/addon/fold/comment-fold.js'
+    import 'codemirror/addon/fold/foldcode.js'
+    import 'codemirror/addon/fold/foldgutter.js'
+    import 'codemirror/addon/fold/indent-fold.js'
+    import 'codemirror/addon/fold/markdown-fold.js'
+    import 'codemirror/addon/fold/xml-fold.js'
+
 
     export default {
         props: {
@@ -137,8 +154,8 @@
                     '}\n',
                 cmOptions: {
                     tabSize: 4,
-                    mode: 'text/java',
-                    theme: 'paraiso-light',
+                    mode: 'text/x-java',
+                    theme: 'idea',
                     lineNumbers: true,
                     line: true,
                 },
