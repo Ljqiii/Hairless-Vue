@@ -11,6 +11,11 @@ const routes = [
     {
         path: '/',
         name: 'Home',
+        redirect: to => {
+            let redirectpath = sessionStorage.getItem("pathBeforeLogin")
+            sessionStorage.removeItem("pathBeforeLogin");
+            return redirectpath == "/" ? null : redirectpath;
+        },
         component: Home
     },
     {//题目列表，跳转到all

@@ -113,6 +113,7 @@
                     this.$message("退出登录");
                 }
             }, redirecttologin: function () {
+                sessionStorage.setItem("pathBeforeLogin", this.$route.path)
                 authapi.login()
             }
 
