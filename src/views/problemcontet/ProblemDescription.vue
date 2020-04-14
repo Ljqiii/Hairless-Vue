@@ -1,5 +1,6 @@
 <template>
-    <div :style="{margintosh: '7px',display:'flex',flexDirection: 'column',height: problemdescriptioncontentstyle}" ref="problemdescriptioncontent">
+    <div :style="{margintosh: '7px',display:'flex',flexDirection: 'column',height: problemdescriptioncontentstyle}"
+         ref="problemdescriptioncontent">
 
         <div style="display: flex;justify-content: flex-start;font-weight: bold;font-size: 20px;margin-bottom: 7px">
             #{{problem["id"]}}
@@ -72,6 +73,23 @@
 
             </el-checkbox-group>
 
+            <div v-if="newfavoritefolderbtnVisable">
+                <el-button type="text" v-on:click="showNewfavoritefolder"><i class="el-icon-plus"></i> 新建收藏夹</el-button>
+            </div>
+            <div style="display: flex;flex-direction: row;align-items: center" v-if="newfavoritefolderVisable">
+                <el-input v-model="newfavoritefolderbtnInput" placeholder="收藏夹名称" size="small" style="width: 120px;"
+                          class="newfavoritefolderinput"></el-input>
+                <div style="width: 13px;"></div>
+                <el-checkbox v-model="newfavoritefolderbtnSecert" size="medium">私密</el-checkbox>
+                <div style="width: 13px;"></div>
+
+                <el-button size="medium" type="text" v-on:click="newfavoritefolder">确定</el-button>
+                <el-button size="medium" type="text" v-on:click="hideNewfavoritefolder">
+                    <i class="el-icon-close"></i>
+                </el-button>
+
+            </div>
+
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="changefavorite">确 定</el-button>
             </span>
@@ -91,7 +109,7 @@
             vueCustomScrollbar
         },
         mounted() {
-            this.problemdescriptioncontentheight = window.innerHeight-50 - this.$refs.problemdescriptioncontent.getBoundingClientRect().y;
+            this.problemdescriptioncontentheight = window.innerHeight - 50 - this.$refs.problemdescriptioncontent.getBoundingClientRect().y;
             var me = this;
             window.addEventListener("resize", () => {
                 me.problemdescriptioncontentheight = window.innerHeight - me.$refs.problemdescriptioncontent.getBoundingClientRect().y;
@@ -122,6 +140,10 @@
         },
         data() {
             return {
+                newfavoritefolderbtnInput: "",
+                newfavoritefolderbtnSecert: false,
+                newfavoritefolderbtnVisable: true,
+                newfavoritefolderVisable: false,
                 problemdescriptioncontentheight: 0,
                 problemFavoriteFolderLists: [],
                 favoriteFolderCheckList: [],
@@ -145,6 +167,34 @@
             }
         },
         methods: {
+            //新收藏夹
+            newfavoritefolder() {
+                var that = this;
+                let isPublic = !that.newfavoritefolderbtnSecert
+
+                axios.post(Url.withBase("/api/newfavoritefolder"), {
+                        folderName: that.newfavoritefolderbtnInput,
+                        isPublic: isPublic
+                    }
+                ).then(function (response) {
+                    that.getFavoriteFolderList();
+                    that.hideNewfavoritefolder();
+                    that.newfavoritefolderbtnInput = "";
+                    that.newfavoritefolderbtnSecert = false;
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            },
+            //显示新建收藏夹input
+            showNewfavoritefolder() {
+                this.newfavoritefolderbtnVisable = false;
+                this.newfavoritefolderVisable = true;
+            },
+            //隐藏新建收藏夹input
+            hideNewfavoritefolder() {
+                this.newfavoritefolderbtnVisable = true;
+                this.newfavoritefolderVisable = false;
+            },
             refreshHeight() {
                 this.problemdescriptioncontentheight = window.innerHeight - this.$refs.problemdescriptioncontent.getBoundingClientRect().y;
             }, //收藏确定按钮
@@ -173,6 +223,14 @@
                     console.log(error)
                 })
             },
+            getFavoriteFolderList() {
+                var me = this;
+                axios.get(Url.withBase("/api/favoritefolderlist"), {}).then(function (response) {
+                    me.favoritefolderlist = response.data.data;
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            },
             //收藏按钮
             favorite() {
                 var me = this;
@@ -190,14 +248,20 @@
                 })
 
                 //收藏夹列表
-                axios.get(Url.withBase("/api/favoritefolderlist"), {}).then(function (response) {
-                    me.favoritefolderlist = response.data.data;
-                }).catch(function (error) {
-                    console.log(error)
-                })
+                this.getFavoriteFolderList()
             }
         }
     }
 
 
 </script>
+
+<style>
+
+    .newfavoritefolderinput input {
+
+        border-radius: 3px;
+        height: 25px !important;
+        line-height: 25px !important;
+    }
+</style>
