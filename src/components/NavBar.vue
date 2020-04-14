@@ -53,6 +53,10 @@
                         <el-avatar size="small" v-else-if="islogin==true">{{username}}</el-avatar>
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
+                        <!--                        v-if="this.$store.getters['authStore/isAdmin']"-->
+                        <el-dropdown-item command="tome">
+                            个人主页
+                        </el-dropdown-item>
                         <el-dropdown-item command="a">黄金糕</el-dropdown-item>
                         <el-dropdown-item command="b">狮子头</el-dropdown-item>
                         <el-dropdown-item command="c">螺蛳粉</el-dropdown-item>
@@ -73,6 +77,7 @@
 
     import Event from '../plugins/event.js';
     import authapi from "../api/authApi";
+    import AuthUtil from '../utils/AuthUtil'
 
     export default {
         name: 'NavBar',
@@ -111,6 +116,9 @@
                 if (command == "logout") {
                     authapi.logout();
                     this.$message("退出登录");
+                }
+                if (command == "tome") {
+                    this.$router.push("/u/" + this.username+"/")
                 }
             }, redirecttologin: function () {
                 sessionStorage.setItem("pathBeforeLogin", this.$route.path)

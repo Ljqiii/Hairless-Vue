@@ -10,108 +10,34 @@
 
                 <el-col :span="16">
 
-                    <div style="display: flex;flex-direction: column;justify-content: flex-start">
+                    <!--                        显示当前分类-->
+                    <h2 style="text-align: left">
+                        <i class="el-icon-menu" style="padding-right: 2px"></i>
+                        分类-{{currentcategoryname==null?'Loading':currentcategoryname}}
+                    </h2>
 
-                        <!--                        显示当前分类-->
-                        <h2 style="text-align: left">
-                            <i class="el-icon-menu" style="padding-right: 2px"></i>
-                            分类-{{currentcategoryname==null?'Loading':currentcategoryname}}
-                        </h2>
-
-                        <!--                        显示所有分类-->
-                        <div style="display: flex;flex-direction: row;margin-bottom: 10px">
-                            <div v-for="item in categorylist" v-bind:key="item.id">
-                                <el-button plain style="margin-right: 10px" type="warning"
-                                           v-on:click="changecategory(item.symbol,item.name)">{{item.name}}
-                                </el-button>
-                            </div>
+                    <!--                        显示所有分类-->
+                    <div style="display: flex;flex-direction: row;margin-bottom: 10px">
+                        <div v-for="item in categorylist" v-bind:key="item.id">
+                            <el-button plain style="margin-right: 10px" type="warning"
+                                       v-on:click="changecategory(item.symbol,item.name)">{{item.name}}
+                            </el-button>
                         </div>
-                        <!--                        显示题目跳转-->
-                        <div style="display: flex;flex-direction: row">
-                            <!--                            <el-input style="max-width: 300px;margin-right: 10px" v-model="input"-->
-                            <!--                                      placeholder="请输入题目号或标题"></el-input>-->
-
-                        </div>
-                        <!--                        显示题目-->
-                        <el-divider></el-divider>
-
-                        <el-table
-                                @row-click="redirectToProbvlem"
-                                :data="problemlist"
-                                stripe
-                                style="width: 100%">
-                            <el-table-column
-                                    label=""
-                                    width="90">
-                                <template v-slot="scope">
-                                    <i style="padding-left: 20px" class="el-icon-check"
-                                       v-if="scope.row.isResolve==true"></i>
-                                    <i style="padding-left: 20px" class="el-icon-close"
-                                       v-if="scope.row.isResolve==false"></i>
-
-                                </template>
-                            </el-table-column>
-
-                            <!--                            vip-->
-                            <el-table-column
-                                    width="30">
-                                <template slot-scope="scope">
-                                    <div style="display: flex;flex-direction: row;justify-content: center;align-items: center">
-                                        <img :src="require('@/assets/vip.svg')" style="width: 17px;"
-                                             v-if="scope.row.onlyVip==true"/>
-                                    </div>
-                                </template>
-                            </el-table-column>
-
-                            <el-table-column
-                                    prop="id"
-                                    label="#"
-                                    width="180">
-                            </el-table-column>
-
-                            <el-table-column
-                                    label="标题"
-                                    width="280">
-                                <template slot-scope="scope">
-                                    <strong> {{convertComplexity(scope.row.title)}} </strong>
-                                </template>
-                            </el-table-column>
-                            <el-table-column
-                                    label="难度">
-                                <template slot-scope="scope">
-                                    {{convertComplexity(scope.row.complexity)}}
-                                </template>
-                            </el-table-column>
-
-                            <el-table-column
-                                    label="正确率">
-                                <template slot-scope="scope">
-                                    {{convertComplexity(scope.row.acceptance)}}
-                                </template>
-                            </el-table-column>
-
-                            <el-table-column
-                                    prop="discusscount"
-                                    label="讨论">
-                            </el-table-column>
-
-                        </el-table>
-                        <!--            显示页数-->
-                        <el-pagination
-                                background
-                                style="margin-top: 15px"
-                                layout="prev, pager, next"
-                                :current-page="currentpage"
-                                :total="total"
-                                :page-size="20"
-
-                                @current-change="changeproblemlistpage"
-                        >
-
-                        </el-pagination>
-
+                    </div>
+                    <!--                        显示题目跳转-->
+                    <div style="display: flex;flex-direction: row">
+                        <!--                            <el-input style="max-width: 300px;margin-right: 10px" v-model="input"-->
+                        <!--                                      placeholder="请输入题目号或标题"></el-input>-->
 
                     </div>
+                    <!--                        显示题目-->
+                    <el-divider></el-divider>
+
+                    <ProblemList
+                            :total="total"
+                            :changepage="this.changeproblemlistpage" :currentpage="currentpage"
+                            :problemlist="problemlist">
+                    </ProblemList>
 
                 </el-col>
                 <!--                右边栏-->
@@ -166,28 +92,15 @@
     import ECharts from 'vue-echarts'
     import echarts from 'echarts'
     import AuthUtil from '../utils/AuthUtil'
+    import ProblemList from "../components/ProblemList";
 
     export default {
         name: 'ProblemSet',
         components: {
+            ProblemList,
             ECharts,
             echarts
-        }, computed: {
-            convertComplexity() {
-                return function (complexity) {
-                    if (complexity == "easy") {
-                        return '简单'
-                    } else if (complexity == "hard") {
-                        return '困难'
-                    } else if (complexity == "medium") {
-                        return '中等'
-                    } else {
-                        return complexity
-                    }
-                }
-            }
-
-        }, mounted() {
+        }, computed: {}, mounted() {
             this.getAccuracyDate();
             this.getcurrentcategory();
             this.getcategorylist();
@@ -282,21 +195,6 @@
                 this.currentcategoryname = name;
                 this.$router.push(symbol)
                 this.getproblemlist(1, null, symbol)
-            },
-            //跳转到问题页面
-            redirectToProbvlem: function (row) {
-                let vipOnly = row.onlyVip;
-                if (!vipOnly) {
-                    this.$router.push("/problem/" + row.id)
-                } else if (vipOnly && AuthUtil.isVip()) {
-                    this.$router.push("/problem/" + row.id)
-                } else {
-                    this.$message({
-                        message: '仅Vip可以查看此题目',
-                        type: 'warning'
-                    });
-                }
-
             },
             //换页
             changeproblemlistpage: function (val) {

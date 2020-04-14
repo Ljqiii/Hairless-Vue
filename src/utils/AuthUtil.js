@@ -13,9 +13,10 @@ function toLogin(username) {
     store.commit("changeIsLogin", true);
 }
 
-function setUserInfo(nickName, isVip, avatarUrl) {
+function setUserInfo(nickName, isVip, avatarUrl, isAdmin) {
     store.commit("authStore/changeNickName", nickName);
     store.commit("authStore/changeIsVip", isVip);
+    store.commit("authStore/changeIsAdmin", isAdmin);
     store.commit("authStore/changeAvatarUrl", avatarUrl);
 }
 
@@ -32,11 +33,16 @@ function isVip() {
     return store.getters["authStore/isVip"] == null ? false : store.getters["authStore/isVip"];
 }
 
+function isAdmin() {
+    return store.getters["authStore/isAdmin"] == null ? false : store.getters["authStore/isAdmin"];
+}
+
 export default {
     toUnLogin: toUnLogin,
     toLogin: toLogin,
     getAccessToken: getAccessToken,
     setAccessToken: setAccessToken,
     setUserInfo: setUserInfo,
-    isVip: isVip
+    isVip: isVip,
+    isAdmin: isAdmin
 }
