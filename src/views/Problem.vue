@@ -4,14 +4,53 @@
         <el-row>
             <el-col :span="7"
                     :style="{height:problemstyleheight+ 'px',paddingLeft:'15px',backgroundColor:'white',borderRight:'1px solid #E0E3EA'}">
-                <el-tabs v-model="tabActiveName" @tab-click="handleTabClick">
+                <el-tabs v-model="tabActiveName" @tab-click="handleTabClick"
+                         style="height: 100%;display: flex;flex-direction: column">
                     <el-tab-pane label="题目描述" name="description">
-                        <span slot="label"><i class="el-icon-date"></i> 题目描述</span>
+                        <span slot="label"><i class="el-icon-tickets"></i> 题目描述</span>
                         <ProblemDescription v-bind:problem="problem"></ProblemDescription>
                     </el-tab-pane>
-                    <el-tab-pane label="讨论" name="discuss">讨论</el-tab-pane>
-                    <el-tab-pane label="提交记录" name="submit">提交记录</el-tab-pane>
-                    <el-tab-pane label="题解" name="answer">题解</el-tab-pane>
+                    <el-tab-pane label="讨论" name="discuss">
+                        <span slot="label" v-on:click="this.getAllSubmit"><i
+                                class="el-icon-chat-line-round"></i> 讨论</span>
+
+
+                    </el-tab-pane>
+
+                    <el-tab-pane label="提交记录" name="submit" style="height: 100%;width: 100%;"
+                                 v-on:click="this.getAllSubmit">
+                        <span slot="label" v-on:click="this.getAllSubmit"><i class="el-icon-pie-chart"></i> 提交记录</span>
+                        <vue-custom-scrollbar style="height: 100%;flex: 1;text-align: left;padding-left: 10px;"
+                                              settings="maxScrollbarLength: 60">
+                            <div style="display: flex;flex-direction: column;width: 95%">
+                                <div style="line-height: normal;display: flex;flex-direction: row;border-bottom: 1px solid #e8ebf3;height: 35px;line-height: 35px;margin-top: 2px">
+                                    <div style="flex: 1">
+                                        日期
+                                    </div>
+                                    <div style="flex: 1">
+                                        结果
+                                    </div>
+                                </div>
+                                <div v-for="item in allSubmits" v-bind:key="item.id"
+                                     style="line-height: normal;display: flex;flex-direction: row;border-bottom: 1px solid #e8ebf3;height: 35px;line-height: 35px;margin-top: 2px">
+                                    <div style="flex: 1;font-size: 14px">
+                                        {{item.submitedTime}}
+                                    </div>
+                                    <div style="flex: 1;text-align: left"
+                                         v-if="item.result!=null && item.result.indexOf('success')>=0">
+                                        <span> <i class="el-icon-check"></i></span>
+                                    </div>
+                                    <div v-else style="flex: 1;text-align: left">
+                                        <span> <i class="el-icon-close"></i></span>
+                                    </div>
+                                </div>
+                                <div style="height: 30px;"></div>
+                            </div>
+                        </vue-custom-scrollbar>
+                    </el-tab-pane>
+                    <el-tab-pane label="题解" name="answer">
+                        <span slot="label"><i class="el-icon-document-checked"></i> 题解</span>
+                    </el-tab-pane>
                 </el-tabs>
             </el-col>
             <el-col :span="17" ref="problemdescriptioncontent" style=""
@@ -106,10 +145,10 @@
         },
         mounted() {
             var me = this;
-            this.problemcontentheight = window.innerHeight - this.$refs.problemcontent.getBoundingClientRect().y;
+            this.problemcontentheight = window.innerHeight - this.$refs.problemcontent.getBoundingClientRect().y - 1;
             this.getProblem();
             window.addEventListener("resize", () => {
-                me.problemcontentheight = window.innerHeight - me.$refs.problemcontent.getBoundingClientRect().y;
+                me.problemcontentheight = window.innerHeight - me.$refs.problemcontent.getBoundingClientRect().y - 1;
             })
             this.connectWs()
 
@@ -122,6 +161,7 @@
         },
         data() {
             return {
+                allSubmits: [],
                 steps: [],
                 logs: [],
                 stepList: [{id: 1, content: "sdf"}, {id: 2, content: "ssdfadf"}],
@@ -205,7 +245,23 @@
                     }).catch(function (error) {
                     console.log(error)
                 })
+            },
+            //获得所有提交记录
+            getAllSubmit() {
+                let me = this;
+
+                axios.get(Url.withBase('/api/getallsubmit/'), {
+                    params: {
+                        problemid: this.$route.params["problemid"]
+                    }
+                }).then(function (response) {
+                    console.log(response)
+                    me.allSubmits = response.data.data;
+                }).catch(function (error) {
+                    console.log(error)
+                })
             }
+
         }
     }
 
@@ -223,6 +279,12 @@
 </style>
 
 <style>
+
+    .el-tabs__content {
+        display: flex;
+        flex: 1;
+    }
+
     .el-timeline {
         padding-inline-start: 30px;
     }
