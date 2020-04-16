@@ -40,14 +40,24 @@
                 <i class="el-icon-message-solid" style="font-size: 25px"
                    v-if="islogin==true&&unreadNotificationNount==0"></i>
 
-                <el-badge :value="unreadNotificationNount" :max="99" class="item"
+                <el-badge :value="unreadNotificationNount" :max="99" class="notificationcount"
                           v-if="islogin==true&&unreadNotificationNount!=0">
                     <i class="el-icon-message-solid" style="font-size: 25px"></i>
                 </el-badge>
+                <div style="width: 20px;"></div>
+                <div>
+                    <el-tooltip class="item" effect="dark" content="HairNull 会员" placement="bottom">
+                        <img v-if="this.$store.getters['authStore/isVip']" :src="require('@/assets/VIPBig.svg')"
+                             style="height: 27px;">
+                    </el-tooltip>
+
+                </div>
+                <div style="width: 20px;"></div>
+
 
                 <el-dropdown @command="handleCommand">
 
-                    <el-button style="width: 90px;" type="text" class="el-dropdown-link">
+                    <el-button style="" type="text" class="el-dropdown-link">
                         <el-avatar size="small" v-if="avatar_url&&islogin==true"
                                    v-bind:src="avatar_url"></el-avatar>
                         <el-avatar size="small" v-else-if="islogin==true">{{username}}</el-avatar>
@@ -64,6 +74,7 @@
                         <el-dropdown-item command="logout" divided icon="el">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
+                <div style="width: 20px;"></div>
 
 
             </el-col>
@@ -118,7 +129,7 @@
                     this.$message("退出登录");
                 }
                 if (command == "tome") {
-                    this.$router.push("/u/" + this.username+"/")
+                    this.$router.push("/u/" + this.username + "/")
                 }
             }, redirecttologin: function () {
                 sessionStorage.setItem("pathBeforeLogin", this.$route.path)
@@ -180,4 +191,12 @@
     }
 
 
+</style>
+<style>
+    .notificationcount .el-badge__content {
+        font-size: 10px;
+        height: 14px;
+        line-height: 14px;
+        padding: 0 4px;
+    }
 </style>
