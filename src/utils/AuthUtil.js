@@ -5,7 +5,7 @@ function toUnLogin() {
     store.commit("authStore/changeToken", "");//删除Vuex中token
     store.commit("changeIsLogin", false);//登录状态改为未登录
     store.commit("changeIsLogin", false);
-
+    store.commit("authStore/changeIsVip", false);
 }
 
 function toLogin(username) {

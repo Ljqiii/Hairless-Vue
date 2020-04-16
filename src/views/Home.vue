@@ -27,6 +27,11 @@
                 return testjs.gettestText()
             }
         }, mounted() {
+            let redirectpath = sessionStorage.getItem("pathBeforeLogin")
+            if (redirectpath != null && redirectpath != '/') {
+                sessionStorage.removeItem("pathBeforeLogin");
+                this.$router.push(redirectpath)
+            }
 
             this.connectWs();
 
