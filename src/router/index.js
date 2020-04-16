@@ -7,6 +7,10 @@ import Problem from "../views/Problem";
 import User from "../views/User";
 import LogoSetting from "../views/me/LogoSetting";
 import Favorite from "../views/me/Favorite";
+import Vip from "../views/Vip";
+import VipResult from "../views/VipResult";
+import Redirect from "../views/Redirect";
+
 
 Vue.use(VueRouter)
 
@@ -34,8 +38,23 @@ const routes = [
         path: '/problem/:problemid',
         name: 'Problem',
         component: Problem
+    }, {//redirect
+        path: '/redirect/',
+        name: 'Redirect',
+        component: Redirect
     },
-    {//admin
+    {//vip
+        path: '/hairnull/',
+        name: 'Vip',
+        component: Vip,
+        children: [
+            {
+                path: 'result/',
+                component: VipResult
+            }
+        ]
+    },
+    {//me
         path: '/u/:username/',
         name: 'User',
         component: User,

@@ -13,7 +13,7 @@
                 <el-button class="tabitem" type="text" v-on:click="routeto('/problemset')">题库</el-button>
                 <el-button class="tabitem" type="text">讨论区</el-button>
                 <el-button class="tabitem" type="text">竞赛</el-button>
-                <el-button class="tabitem" type="text">会员</el-button>
+                <el-button class="tabitem" type="text" v-on:click="routeto('/hairnull')">会员</el-button>
             </el-col>
             <el-col :span="6" style="" class="searchcol">
                 <el-input class="searchinput" v-model="searchinput" placeholder="请输入内容" size="medium"
