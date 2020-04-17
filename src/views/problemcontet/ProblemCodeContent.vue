@@ -15,13 +15,20 @@
                           <span class="custom-tree-node" slot-scope="{ node, data }">
 
                     <!--          文件，文件夹图标-->
-                              <img :src="require('@/assets/file.svg')" v-if="node.data.type=='file'"
-                                   style="height: 12px;margin-right: 5px "/>
+                              <img :src="require('@/assets/file.svg')"
+                                   v-if="node.data.type=='file'"
+                                   style="height: 12px;margin-right: 5px"/>
                               <img :src="require('@/assets/folder.svg')" v-if="node.data.type=='folder'"
-                                   style="height: 12px;margin-right: 5px "/>
+                                   style="height: 12px;margin-right: 5px"/>
+                              <span v-if="node.data.editing==null||node.data.editing==false">
+                                  {{node.label}}
+
+                                  <img :src="require('@/assets/lock.svg')" style="height: 15px"
+                                       v-if="node.data.readOnly"/>
+                              </span>
 
 
-                              <span v-if="node.data.editing==null||node.data.editing==false">{{ node.label}}</span>
+
                               <input v-if="node.data.editing==true" v-model="node.label" @blur="node.data.editing=false"
                                      autofocus/>
 
@@ -53,13 +60,13 @@
             <el-col :span="19" style="height: 100%;display: flex;flex-direction: column;border-left: 1px solid #E0E3EA">
 
                 <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab" class="eltab"
-                         style="background-color: white">
+                         style="background-color: white" @tab-click="handleClick">
                     <el-tab-pane
                             v-for="(item, index) in opendTabs"
-                            :key="item.filename"
+                            :key="item.path+item.filename"
                             :label="item.filename"
-                            :name="item.filename"
-                    >
+                            :name="item.path+item.filename">
+
                         {{item.content}}
                     </el-tab-pane>
                 </el-tabs>
@@ -111,6 +118,7 @@
         },
         data() {
             return {
+                elTabPaneReadOnly: {},
                 currentFile: {content: ""},
                 currentTabName: '',
                 opendTabs: [],
@@ -124,35 +132,8 @@
                     name: '2',
                     content: 'Tab 2 content'
                 }],
-
-                code: 'import com.demo.util.MyType;\n' +
-                    'import com.demo.util.MyInterface;\n' +
-                    '\n' +
-                    'public enum Enum {\n' +
-                    '  VAL1, VAL2, VAL3\n' +
-                    '}\n' +
-                    '\n' +
-                    'public class Class<T, V> implements MyInterface {\n' +
-                    '  public static final MyType<T, V> member;\n' +
-                    '  \n' +
-                    '  private class InnerClass {\n' +
-                    '    public int zero() {\n' +
-                    '      return 0;\n' +
-                    '    }\n' +
-                    '  }\n' +
-                    '\n' +
-                    '  @Override\n' +
-                    '  public MyType method() {\n' +
-                    '    return member;\n' +
-                    '  }\n' +
-                    '\n' +
-                    '  public void method2(MyType<T, V> value) {\n' +
-                    '    method();\n' +
-                    '    value.method3();\n' +
-                    '    member = value;\n' +
-                    '  }\n' +
-                    '}\n',
                 cmOptions: {
+                    readOnly: false,
                     tabSize: 4,
                     mode: 'text/x-java',
                     theme: 'idea',
@@ -167,6 +148,11 @@
             }
         },
         methods: {
+            handleClick(tab, event) {
+                this.editableTabsValue = tab.name;
+
+                this.cmOptions.readOnly = this.elTabPaneReadOnly[tab.name] == null ? false : this.elTabPaneReadOnly[tab.name];
+            },
             removeTab(targetName) {
                 let tabs = this.editableTabs;
                 let activeName = this.editableTabsValue;
@@ -204,15 +190,18 @@
                 })
             },
             handleNodeClick(data) {
-                console.log("data: ");
-                console.log(data);
 
                 this.currentFile = data;
-
+                this.cmOptions.readOnly = data.readOnly;
                 if (data.type == 'file' && this.opendTabs.indexOf(data) == -1) {
-                    this.opendTabs.push(data)
+                    let k = data.path + data.filename
+                    let v = data.readOnly
+                    this.elTabPaneReadOnly[k] = v;
+                    if (this.opendTabs.indexOf(data) == -1) {
+                        this.opendTabs.push(data)
+                    }
                 }
-
+                this.editableTabsValue = data.path + data.filename;
                 // console.log("codetree: ");
                 // console.log(this.codetree);
             }
