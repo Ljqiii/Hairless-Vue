@@ -8,6 +8,8 @@ import User from "../views/User";
 import LogoSetting from "../views/me/LogoSetting";
 import Favorite from "../views/me/Favorite";
 import Vip from "../views/Vip";
+import Discuss from "../views/Discuss";
+import NewPost from "../views/NewPost";
 import VipResult from "../views/VipResult";
 import Redirect from "../views/Redirect";
 
@@ -28,6 +30,16 @@ const routes = [
         path: '/problemset/:category',
         name: 'ProblemSet',
         component: ProblemSet
+    },
+    {//讨论区
+        path: '/discuss',
+        name: 'Discuss',
+        component: Discuss
+    },
+    {//新帖子
+        path: '/newpost',
+        name: 'NewPost',
+        component: NewPost
     },
     {//题目
         path: '/problem/:problemid',
