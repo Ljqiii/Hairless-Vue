@@ -37,9 +37,9 @@
         },
         data() {
             return {
-                showlogin: true,
+                showlogin: false,
                 authVisible: false,
-                showregister: false
+                showregister: true
             }
         }, methods: {
             hideForm:function(){
@@ -53,8 +53,8 @@
             },
             handleClose: function (done) {
                 console.log(done)
-                this.showregister = false;
-                this.showlogin = true;
+                this.showregister = true;
+                this.showlogin = false;
                 done();
             }
         }

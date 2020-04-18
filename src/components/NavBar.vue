@@ -81,6 +81,9 @@
             <el-col :span="1"></el-col>
         </el-row>
         <div class="jianbian"></div>
+        <form :action="logouturl" method="post" ref="logoutformhidden">
+        </form>
+
     </div>
 </template>
 
@@ -89,6 +92,7 @@
     import Event from '../plugins/event.js';
     import authapi from "../api/authApi";
     import AuthUtil from '../utils/AuthUtil'
+    import Url from "../utils/Url";
 
     export default {
         name: 'NavBar',
@@ -96,6 +100,9 @@
             msg: String
         },
         computed: {
+            logouturl() {
+                return Url.withAuthBase("/logout")
+            },
             islogin() {
                 return this.$store.getters.getIsLogin;
             }, username() {
@@ -125,7 +132,7 @@
             }, handleCommand(command) {
                 //退出登录
                 if (command == "logout") {
-                    authapi.logout();
+                    this.$refs.logoutformhidden.submit();
                     this.$message("退出登录");
                 }
                 if (command == "tome") {

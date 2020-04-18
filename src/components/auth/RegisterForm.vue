@@ -15,12 +15,25 @@
             </el-form-item>
 
             <el-form-item label="密码" prop="password">
-                <el-input type="password" v-model="registerForm.password" class="registerinput" auto-complete="off"></el-input>
+                <el-input type="password" v-model="registerForm.password" class="registerinput"
+                          auto-complete="off"></el-input>
             </el-form-item>
 
             <el-form-item label="确认密码" prop="repeatpassword">
-                <el-input type="password" v-model="registerForm.repeatpassword" class="registerinput" auto-complete="off"></el-input>
+                <el-input type="password" v-model="registerForm.repeatpassword" class="registerinput"
+                          auto-complete="off"></el-input>
             </el-form-item>
+
+            <el-form-item label="注册角色">
+
+                <el-select placeholder="请选择" v-model="registerrole" style="width: 100%;">
+                    <el-option label="正常用户" :value="'NORMALUSER'"></el-option>
+                    <el-option label="教师" :value="'TEACHER'"></el-option>
+                </el-select>
+
+
+            </el-form-item>
+
             <div class="registercontainer">
                 <p class="registertext">已有账号，点击
                     <el-button type="text" v-on:click="changeauth">登录</el-button>
@@ -31,6 +44,11 @@
         </el-form>
 
 
+        <form :action="loginurl" method="post" ref="loginformhidden">
+            <el-input type="hidden" name="username" :value="registerForm.username"/>
+            <el-input type="hidden" name="password" :value="registerForm.password"/>
+        </form>
+
 
     </div>
 </template>
@@ -38,10 +56,19 @@
 <script>
 
 
+    import axios from "axios";
+    import Url from "../../utils/Url";
+    import authapi from "../../api/authApi";
+
     export default {
         name: 'RegisterForm',
         props: {
             msg: String
+        },
+        computed: {
+            loginurl() {
+                return Url.withAuthBase("/login")
+            }
         },
         data() {
             var validatePassword = (rule, value, callback) => {
@@ -65,6 +92,7 @@
             };
 
             return {
+                registerrole: 'NORMALUSER',
                 registerForm: {
                     username: "",
                     nickname: "",
@@ -79,8 +107,8 @@
                         {required: true, message: '请输入昵称', trigger: 'blur'},
                         {min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur'}
                     ], email: [
-                        { required: true, message: '请输入邮箱', trigger: 'blur'},
-                        {type: 'email',min: 3, message: '邮箱格式不正确', trigger: 'blur'}
+                        {required: true, message: '请输入邮箱', trigger: 'blur'},
+                        {type: 'email', min: 3, message: '邮箱格式不正确', trigger: 'blur'}
                     ], password: [
                         {required: true, trigger: ['blur', 'change'], validator: validatePassword},
                         {min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur'}
@@ -92,12 +120,32 @@
             }
         }, methods: {
             changeauth: function () {
-                this.$emit("changeauth");
+                authapi.login()
+                // this.$emit("changeauth");
             },
             register: function (formname) {
+                var that = this;
                 this.$refs[formname].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
+                        axios.post(Url.withAuthBase("/register"), {
+                            username: that.registerForm.username,
+                            nickname: that.registerForm.nickname,
+                            password: that.registerForm.password,
+                            email: that.registerForm.email,
+                            role: that.registerrole
+                        }).then(function (response) {
+                            if (response.data.code != 200) {
+                                that.$message({
+                                    type: 'success',
+                                    message: response.data.msg
+                                });
+                            } else {
+                                that.$refs.loginformhidden.submit();
+                            }
+                            console.log(response)
+                        }).catch(function (error) {
+                            console.log(error)
+                        })
                     } else {
                         return false;
                     }

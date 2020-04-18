@@ -11,7 +11,7 @@ export default new Vuex.Store({
         searchStore: searchStore
     },
     state: {
-        authbaseurl: "http://hairless.ljqiii.xyz:7082/auth",
+        authbaseurl: "http://hairlessauth.ljqiii.xyz:7081",
         baseurl: "http://hairless.ljqiii.xyz:7082",
         client_id: "browser",
         client_secret: sessionStorage.getItem("client_secret"),

@@ -78,23 +78,23 @@ function getInfo() {
 
 
 //退出登录
-function logout() {
-    // TODO: 后端 revoke token
-    AuthUtil.toUnLogin();
-    console.log("in logout func")
-
-    axios.post(Url.withAuthBase("/logout"), null, {withCredentials: true})
-        .then(function (response) {
-            console.log(response)
-        }).catch(function (error) {
-        console.log(error)
-    })
-}
+// function logout() {
+//     // TODO: 后端 revoke token
+//     AuthUtil.toUnLogin();
+//     console.log("in logout func")
+//
+//     axios.post(Url.withAuthBase("/logout"), null, {withCredentials: true})
+//         .then(function (response) {
+//             console.log(response)
+//         }).catch(function (error) {
+//         console.log(error)
+//     })
+// }
 
 export default {
     chechToken: chechToken,
     login: login,
-    logout: logout,
+    // logout: logout,
     getInfo: getInfo,
     loadUserInfo: loadUserInfo
 }
