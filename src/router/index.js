@@ -8,6 +8,7 @@ import User from "../views/User";
 import LogoSetting from "../views/me/LogoSetting";
 import Favorite from "../views/me/Favorite";
 import Vip from "../views/Vip";
+import Post from "../views/Post";
 import Discuss from "../views/Discuss";
 import NewPost from "../views/NewPost";
 import VipResult from "../views/VipResult";
@@ -40,6 +41,11 @@ const routes = [
         path: '/newpost',
         name: 'NewPost',
         component: NewPost
+    },
+    {//帖子
+        path: '/post/:postid',
+        name: 'Post',
+        component: Post
     },
     {//题目
         path: '/problem/:problemid',
