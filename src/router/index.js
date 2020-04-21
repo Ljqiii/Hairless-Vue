@@ -13,6 +13,7 @@ import Discuss from "../views/Discuss";
 import NewPost from "../views/NewPost";
 import VipResult from "../views/VipResult";
 import Redirect from "../views/Redirect";
+import NewProblem from "../views/NewProblem";
 
 
 Vue.use(VueRouter)
@@ -31,6 +32,11 @@ const routes = [
         path: '/problemset/:category',
         name: 'ProblemSet',
         component: ProblemSet
+    },
+    {//新问题
+        path: '/newproblem',
+        name: 'NewProblem',
+        component: NewProblem
     },
     {//讨论区
         path: '/discuss',

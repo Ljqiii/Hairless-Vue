@@ -14,7 +14,7 @@
 
                     <div style="display: flex;flex-direction: column;text-align: left;justify-content: space-between">
                         <div style="height: 2px;"></div>
-                        <div style="font-weight: bold">
+                        <div style="font-weight: bold;cursor:pointer " v-on:click="redirectToPost(item.id)">
                             {{item.title}}
                         </div>
                         <div style="font-size: 13px">
@@ -70,9 +70,8 @@
             }
         },
         methods: {
-            redirectToPost() {
-                console.log(23423);
-                this.input = "dsfa"
+            redirectToPost(postid) {
+                this.$router.push("/post/"+postid);
             },
             redirectToUser(username) {
                 this.$router.push("/u/" + username + "/")

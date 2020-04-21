@@ -30,7 +30,7 @@
         }, methods: {}, computed: {
             showFooter() {
                 //问题页面时候不显示底部
-                return this.$route.path.match(/\/problem\/\d+/) == null ? true : false
+                return (this.$route.path.match(/\/problem\/\d+/)||this.$route.path.match(/\/newproblem/)) == null ? true : false
             }
         }
     }

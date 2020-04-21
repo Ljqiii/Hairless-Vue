@@ -76,6 +76,8 @@
                 </el-dropdown>
                 <div style="width: 20px;"></div>
 
+                <el-button v-on:click="routeto('/newproblem')" class="addproblembtn" v-if="this.$store.getters['authStore/isTeacher']">添加问题</el-button>
+
 
             </el-col>
             <el-col :span="1"></el-col>
@@ -205,5 +207,10 @@
         height: 14px;
         line-height: 14px;
         padding: 0 4px;
+    }
+    .addproblembtn{
+        background-color: #e3e3e3 !important;
+        padding: 10px 11px !important;
+        border-radius: 2px !important;
     }
 </style>

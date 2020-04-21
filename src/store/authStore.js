@@ -7,6 +7,7 @@ export default {
         nickName: '',
         isVip: false,
         isAdmin: false,
+        isTeacher: false,
         token: localStorage.getItem("token")
     },
     getters: {
@@ -19,6 +20,8 @@ export default {
             return state.isVip;
         }, isAdmin(state) {
             return state.isAdmin;
+        }, isTeacher(state) {
+            return state.isTeacher;
         }, getToken(state) {
             return state.token;
         }, getAvatarUrl(state) {
@@ -34,6 +37,8 @@ export default {
             state.isVip = payload;
         }, changeIsAdmin(state, payload) {
             state.isAdmin = payload;
+        }, changeIsTeacher(state, payload) {
+            state.isTeacher = payload;
         }, changetestAuthTest(state, payload) {
             state.testAuthTest = payload;
         }, changeToken(state, payload) {

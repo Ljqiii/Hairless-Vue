@@ -57,7 +57,7 @@ function loadUserInfo() {
         .then(function (response) {
             console.log(response)
             AuthUtil.toLogin(response.data.data["username"]);
-            AuthUtil.setUserInfo(response.data.data["nickname"], response.data.data["isvip"], response.data.data["avatar"],response.data.data["isAdmin"])
+            AuthUtil.setUserInfo(response.data.data["nickname"], response.data.data["isvip"], response.data.data["avatar"],response.data.data["isAdmin"],response.data.data["isTeacher"])
             notificationApi.setUnreadNotificationCount(response.data.data["unReadNotificationCount"])
         }).catch(function (error) {
         console.log(error)
