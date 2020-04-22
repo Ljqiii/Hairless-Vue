@@ -82,7 +82,7 @@
                     <vue-custom-scrollbar :style="{}" settings="maxScrollbarLength: 60" style="height: 100%">
                         <div style="width: 70%;height: 100%;">
                             <h3 style="text-align: center">基本信息</h3>
-<!--                            TODO: 表单检查-->
+                            <!--                            TODO: 表单检查-->
                             <el-form :model="basicinfoForm" status-icon ref="basicinfoForm" label-width="150px">
                                 <el-form-item label="题目标题">
                                     <el-input v-model="basicinfoForm.title"
@@ -219,13 +219,16 @@
         }, mounted() {
             var me = this;
             this.contentheight = window.innerHeight - this.$refs.newproblemcontent.getBoundingClientRect().y - 1;
-            window.addEventListener("resize", () => {
-                me.contentheight = window.innerHeight - me.$refs.newproblemcontent.getBoundingClientRect().y - 1;
-            })
-
+            window.addEventListener("resize", this.windowsresizeHandler)
             this.problemtemple()
+        }, destroyed() {
+            window.removeEventListener("resize", this.windowsresizeHandler)
         },
         methods: {
+            windowsresizeHandler() {
+                var me = this;
+                me.contentheight = window.innerHeight - me.$refs.newproblemcontent.getBoundingClientRect().y - 1;
+            },
             //题目模板
             problemtemple(lang) {
                 var me = this;

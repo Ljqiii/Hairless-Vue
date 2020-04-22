@@ -111,9 +111,8 @@
         mounted() {
             this.problemdescriptioncontentheight = window.innerHeight - 50 - this.$refs.problemdescriptioncontent.getBoundingClientRect().y;
             var me = this;
-            window.addEventListener("resize", () => {
-                me.problemdescriptioncontentheight = window.innerHeight - me.$refs.problemdescriptioncontent.getBoundingClientRect().y;
-            });
+
+            window.addEventListener("resize", this.windowsresizeHandler);
         },
         props: {
             problem: Object
@@ -166,7 +165,14 @@
                 }
             }
         },
+        destroyed() {
+            window.removeEventListener('resize',this.windowsresizeHandler)
+        },
         methods: {
+            windowsresizeHandler() {
+                var me = this;
+                me.problemdescriptioncontentheight = window.innerHeight - me.$refs.problemdescriptioncontent.getBoundingClientRect().y;
+            },
             //新收藏夹
             newfavoritefolder() {
                 var that = this;

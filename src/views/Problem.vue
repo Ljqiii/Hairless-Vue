@@ -147,11 +147,11 @@
             var me = this;
             this.problemcontentheight = window.innerHeight - this.$refs.problemcontent.getBoundingClientRect().y - 1;
             this.getProblem();
-            window.addEventListener("resize", () => {
-                me.problemcontentheight = window.innerHeight - me.$refs.problemcontent.getBoundingClientRect().y - 1;
-            })
+            window.addEventListener("resize", this.windowsresizeHandler)
             this.connectWs()
-
+        },
+        destroyed() {
+                window.removeEventListener("resize",this.windowsresizeHandler);
         },
         computed: {
             problemstyleheight() {
@@ -175,7 +175,10 @@
             }
         },
         methods: {
-
+            windowsresizeHandler() {
+                var me = this;
+                me.problemcontentheight = window.innerHeight - me.$refs.problemcontent.getBoundingClientRect().y - 1;
+            },
             connectWs: function () {
                 let that = this;
                 this.socket = new ScokJs(Url.withBase("/ws/dockerjudge"))
