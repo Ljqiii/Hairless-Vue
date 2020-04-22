@@ -5,6 +5,7 @@
             <!--            代码树-->
             <el-col :span="5" style="height: 100%;background-color: white;">
                 <vue-custom-scrollbar style="height: 100%;" data-name="scrollbar">
+                    <div style="height: 1px;background-color: #E0E3EA"></div>
                     <el-tree
                             @node-click="handleNodeClick"
                             :data="codetree"
@@ -67,7 +68,6 @@
                             :label="item.filename"
                             :name="item.path+item.filename">
 
-                        {{item.content}}
                     </el-tab-pane>
                 </el-tabs>
 
@@ -105,7 +105,11 @@
 
     export default {
         props: {
-            codetree: Array
+            codetree: Array,
+            createMode: {
+                type: Boolean,
+                default: false
+            },
         },
         name: 'ProblemCodeContent',
         components: {
