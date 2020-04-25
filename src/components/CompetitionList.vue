@@ -7,7 +7,8 @@
                     @row-click="redirectToCompetition"
                     :data="competitionlist"
                     stripe
-                    style="width: 100%">
+
+                    style="width: 100%;cursor: pointer">
 
                 <el-table-column
                         label=""
@@ -22,41 +23,51 @@
                         label="标题"
                         width="280">
                     <template slot-scope="scope">
-                        <strong> {{scope.row.title}} </strong>
+                        <strong style="cursor: pointer"> {{scope.row.title}} </strong>
                     </template>
                 </el-table-column>
 
 
-
                 <el-table-column
                         label="创建人"
-                        width="120" >
+                        width="120">
                     <template slot-scope="scope">
-                        <strong> {{scope.row.createUserNickName}} </strong>
+                        <strong style="cursor: pointer"> {{scope.row.createUserNickName}} </strong>
                     </template>
                 </el-table-column>
 
                 <el-table-column
                         label="开始时间"
-                        width="200"
-                        >
+                        width="150"
+                >
                     <template slot-scope="scope">
-                        <strong> {{scope.row.startTime}} </strong>
+                        <strong style="cursor: pointer"> {{scope.row.startTime}} </strong>
                     </template>
                 </el-table-column>
+                <el-table-column
+                        label="公开"
+                        width="90">
+                    <template slot-scope="scope">
+                        <strong style="cursor: pointer"> {{scope.row.isPublic?'公开':'密码'}} </strong>
+                    </template>
+                </el-table-column>
+
 
                 <el-table-column
                         label="状态"
-                        >
+                >
                     <template v-slot="scope">
 
-                        <el-tag size="mini" type="info" v-if="scope.row.status=='end'">已结束</el-tag>
-                        <el-tag size="mini" type="success" v-if="scope.row.status=='processing'">进行中</el-tag>
-                        <el-tag size="mini" type="" v-if="scope.row.status=='unstart'">未开始</el-tag>
+                        <el-tag size="mini" style="cursor: pointer" type="info" v-if="scope.row.status=='end'">已结束
+                        </el-tag>
+                        <el-tag size="mini" style="cursor: pointer" type="success"
+                                v-if="scope.row.status=='processing'">进行中
+                        </el-tag>
+                        <el-tag size="mini" style="cursor: pointer" type="" v-if="scope.row.status=='unstart'">未开始
+                        </el-tag>
 
                     </template>
                 </el-table-column>
-
 
 
             </el-table>

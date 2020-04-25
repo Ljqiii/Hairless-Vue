@@ -26,7 +26,13 @@
                     </div>
                 </div>
 
-                <el-button v-if="competition.userJoined==false" v-on:click="joincompetition">报名参加</el-button>
+                <el-button v-if="competition.userJoined==false&& competition.status=='unstart'"
+                           v-on:click="joincompetitionbtn">报名参加
+                </el-button>
+
+                <el-button disabled v-if="competition.status=='end'||competition.status=='processing'">比赛进行中或已结束
+                </el-button>
+
 
                 <el-button type="text" v-if="competition.userJoined==true">已报名</el-button>
 
@@ -49,6 +55,21 @@
 
             <el-col :span="1" style="min-height: 1px"></el-col>
         </el-row>
+
+        <el-dialog
+                title="输入密码"
+                :visible.sync="passwordVisible"
+                width="30%">
+            <el-form>
+                <el-input type="password" v-model="password" placeholder="请输入内容" size="medium"></el-input>
+            </el-form>
+
+            <span slot="footer">
+                <el-button @click="passwordVisible = false">取 消</el-button>
+                <el-button type="primary" @click="passwordokbtn">确 定</el-button>
+            </span>
+
+        </el-dialog>
 
 
     </div>
@@ -73,6 +94,8 @@
             this.getcompetition()
         }, data() {
             return {
+                passwordVisible: false,
+                password: null,
                 competition: {},
             }
         }, methods: {
@@ -85,13 +108,38 @@
                     console.log(error)
                 })
             },
+            //参加btn
+            joincompetitionbtn: function () {
+                if (this.competition.isPublic || this.password != null) {
+                    this.joincompetition();
+                    this.password = null;
+                } else {
+                    this.passwordVisible = true;
+                }
+            },
+            //参加按钮
+            passwordokbtn: function () {
+                this.passwordVisible = false;
+                if (this.password == '') {
+                    this.password == null
+                } else {
+                    this.joincompetition();
+                }
+
+            },
+            //post
             joincompetition: function () {
                 var that = this;
                 axios.post(Url.withBase("/api/competition/joincompetition"), {
                     competitionid: that.$route.params["competitionid"],
+                    password: that.password
                 }).then(function (response) {
                     console.log(response)
-                    that.$message(response.data.msg);
+                    if (response.data.code == 200) {
+                        that.$message("报名成功");
+                    } else {
+                        that.$message(response.data.msg);
+                    }
                     that.getcompetition();
                 }).catch(function (error) {
                     console.log(error)

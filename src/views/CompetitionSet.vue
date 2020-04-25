@@ -71,7 +71,7 @@
                 this.getcompetitionlist(val, null, this.$route.params["category"])
             },
             dream() {
-                setInterval(this.$message("退出登录"), 1000);
+                setInterval(this.$message("提示你，梦醒了"), 1000);
             }
         }
     }
