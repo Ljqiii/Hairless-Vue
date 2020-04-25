@@ -14,6 +14,8 @@ import NewPost from "../views/NewPost";
 import VipResult from "../views/VipResult";
 import Redirect from "../views/Redirect";
 import NewProblem from "../views/NewProblem";
+import CompetitionSet from "../views/CompetitionSet";
+import Competition from "../views/Competition";
 
 
 Vue.use(VueRouter)
@@ -28,10 +30,20 @@ const routes = [
         path: '/problemset',//重定向到所有
         redirect: "/problemset/all"
     },
+    {//竞赛列表
+        path: '/competitionset',
+        name: 'CompetitionSet',
+        component: CompetitionSet
+    },
     {//题目列表
         path: '/problemset/:category',
         name: 'ProblemSet',
         component: ProblemSet
+    },
+    {//竞赛
+        path: '/competition/:competitionid',
+        name: 'Competition',
+        component: Competition
     },
     {//新问题
         path: '/newproblem',
