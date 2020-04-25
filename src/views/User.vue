@@ -26,7 +26,7 @@
 
                     <el-menu-item index="./favorite">题目收藏</el-menu-item>
 
-                    <el-menu-item index="./logosetting">帖子</el-menu-item>
+                    <el-menu-item index="./posts">帖子</el-menu-item>
 
                     <el-menu-item index="./logosetting">个人设置</el-menu-item>
 

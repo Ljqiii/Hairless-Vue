@@ -52,8 +52,6 @@
 <script>
     import axios from "axios";
     import Url from "../utils/Url";
-    import AuthUtil from "../utils/AuthUtil";
-    import notificationApi from "../api/notificationApi";
     import PostList from "../components/PostList";
 
     export default {

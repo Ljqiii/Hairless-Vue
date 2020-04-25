@@ -16,6 +16,7 @@ import Redirect from "../views/Redirect";
 import NewProblem from "../views/NewProblem";
 import CompetitionSet from "../views/CompetitionSet";
 import Competition from "../views/Competition";
+import Posts from "../views/me/Posts";
 
 
 Vue.use(VueRouter)
@@ -98,6 +99,11 @@ const routes = [
                 path: 'favorite',
                 component: Favorite
             },
+            {
+                path: 'posts',
+                component: Posts
+            },
+
         ]
     },
     {

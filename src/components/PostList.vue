@@ -12,7 +12,7 @@
                         <el-avatar size="large" v-else class="postuserAvatar">{{item.username}}</el-avatar>
                     </div>
 
-                    <div style="display: flex;flex-direction: column;text-align: left;justify-content: space-between">
+                    <div style="display: flex;flex-direction: column;text-align: left;justify-content: space-between;flex: 1">
                         <div style="height: 2px;"></div>
                         <div style="font-weight: bold;cursor:pointer " v-on:click="redirectToPost(item.id)">
                             {{item.title}}
@@ -24,6 +24,11 @@
                         </div>
                         <div style="height: 2px;"></div>
                     </div>
+                    <div style="width: 30px;" v-if="deleteBtn">
+                        <el-button size="small" style="align-items: flex-end" v-on:click="deletePost(item)">删除</el-button>
+                    </div>
+                    <div style="width: 70px;"></div>
+
                 </div>
                 <div style="height: 1px;background-color: #DCDFE6;margin-top: 15px"></div>
             </div>
@@ -56,9 +61,17 @@
 </template>
 
 <script>
+    import axios from "axios";
+    import Url from "../utils/Url";
+    import Event from "../plugins/event";
+
     export default {
         name: 'PostList',
         props: {
+            deleteBtn: {
+                type: Boolean,
+                default: false
+            },
             changepage: Function,
             postlist: Array,
             pagedata: Object
@@ -70,8 +83,23 @@
             }
         },
         methods: {
+            deletePost(post) {
+                var that = this;
+                axios.post(Url.withBase("/api/forum/deletepost"), {
+                        postid: post.id
+                    }
+                ).then(function (response) {
+                    that.$message(response.data.msg);
+                    console.log(response.data.code == 200)
+                    if (response.data.code == 200) {
+                        Event.$emit("refreshpost");
+                    }
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            },
             redirectToPost(postid) {
-                this.$router.push("/post/"+postid);
+                this.$router.push("/post/" + postid);
             },
             redirectToUser(username) {
                 this.$router.push("/u/" + username + "/")
@@ -84,10 +112,10 @@
 
 
 <style>
-    .postuserAvatar {
-        width: 45px !important;
-        height: 45px !important;
-        line-height: 45px !important;
-        font-size: 17px !important;
-    }
+    /*.postuserAvatar {*/
+    /*    width: 45px !important;*/
+    /*    height: 45px !important;*/
+    /*    line-height: 45px !important;*/
+    /*    font-size: 17px !important;*/
+    /*}*/
 </style>
