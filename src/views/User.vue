@@ -20,7 +20,7 @@
                         <el-menu-item index="./logosetting">-</el-menu-item>
                     </el-submenu>
 
-                    <el-menu-item index="./problem">题目</el-menu-item>
+                    <el-menu-item index="./problems">题目</el-menu-item>
 
                     <el-menu-item index="./logosetting">竞赛</el-menu-item>
 

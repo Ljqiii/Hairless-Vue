@@ -89,6 +89,10 @@
 
     export default {
         props: {
+            deleteBtn: {
+                type: Boolean,
+                default: false
+            },
             currentpage: Number,
             total: Number,
             problemlist: Array,

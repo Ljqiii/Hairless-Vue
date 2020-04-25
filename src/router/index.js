@@ -17,6 +17,7 @@ import NewProblem from "../views/NewProblem";
 import CompetitionSet from "../views/CompetitionSet";
 import Competition from "../views/Competition";
 import Posts from "../views/me/Posts";
+import Problems from "../views/me/Problems";
 
 
 Vue.use(VueRouter)
@@ -86,7 +87,7 @@ const routes = [
             }
         ]
     },
-    {//me
+    {//user
         path: '/u/:username/',
         name: 'User',
         component: User,
@@ -94,6 +95,10 @@ const routes = [
             {
                 path: 'logosetting',
                 component: LogoSetting
+            },
+            {
+                path: 'problems',
+                component: Problems
             },
             {
                 path: 'favorite',
