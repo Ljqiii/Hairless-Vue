@@ -99,7 +99,7 @@
                 competition: {},
             }
         }, methods: {
-            // 获得竞赛列表
+            // 获得竞赛
             getcompetition: function () {
                 var me = this;
                 axios.get(Url.withBase("/api/competition/competition/" + this.$route.params["competitionid"]), {}).then(function (response) {

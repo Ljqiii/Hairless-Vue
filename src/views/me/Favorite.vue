@@ -47,7 +47,6 @@
                 this.getFavoriteproblemlist(1, null, this.pathUsername, this.currentFavoriteFolderId)
             },
             handleClick: function (e) {
-                console.log(e)
                 this.currentFavoriteFolderId = this.favoritefolderlist[e.index].id
                 this.getFavoriteproblemlist(1, null, this.pathUsername, this.currentFavoriteFolderId)
 

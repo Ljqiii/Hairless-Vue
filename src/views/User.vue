@@ -22,13 +22,16 @@
 
                     <el-menu-item index="./problems">题目</el-menu-item>
 
-                    <el-menu-item index="./logosetting">竞赛</el-menu-item>
+                    <el-menu-item index="./competitions">竞赛</el-menu-item>
 
                     <el-menu-item index="./favorite">题目收藏</el-menu-item>
 
                     <el-menu-item index="./posts">帖子</el-menu-item>
 
-                    <el-menu-item index="./logosetting">个人设置</el-menu-item>
+                    <el-menu-item
+                            v-if="currentusername==pathUsername"
+                            index="./mesetting">个人设置
+                    </el-menu-item>
 
                 </el-menu>
             </el-aside>
@@ -48,13 +51,19 @@
         computed: {
             pathUsername() {
                 return this.$route.params["username"];
+            }, currentusername() {
+                return this.$store.getters["authStore/getUserName"]
             }
-        },
+        }
+        ,
         data() {
             return {}
-        }, mounted() {
+        }
+        ,
+        mounted() {
 
-        },
+        }
+        ,
         methods: {}
     }
 

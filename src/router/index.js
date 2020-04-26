@@ -18,6 +18,9 @@ import CompetitionSet from "../views/CompetitionSet";
 import Competition from "../views/Competition";
 import Posts from "../views/me/Posts";
 import Problems from "../views/me/Problems";
+import Competitions from "../views/me/Competitions";
+import NewCompetition from "../views/NewCompetition";
+import UserSetting from "../views/me/UserSetting";
 
 
 Vue.use(VueRouter)
@@ -62,6 +65,11 @@ const routes = [
         name: 'NewPost',
         component: NewPost
     },
+    {//新竞赛
+        path: '/newcompetition',
+        name: 'NewCompetition',
+        component: NewCompetition
+    },
     {//帖子
         path: '/post/:postid',
         name: 'Post',
@@ -101,12 +109,20 @@ const routes = [
                 component: Problems
             },
             {
+                path: 'competitions',
+                component: Competitions
+            },
+            {
                 path: 'favorite',
                 component: Favorite
             },
             {
                 path: 'posts',
                 component: Posts
+            },
+            {
+                path: 'mesetting',
+                component: UserSetting
             },
 
         ]
