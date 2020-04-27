@@ -13,7 +13,7 @@
                             :props="defaultProps"
                             default-expand-all
                             :expand-on-click-node="false">
-                          <span class="custom-tree-node" slot-scope="{ node, data }">
+                          <span class="custom-tree-node" slot-scope="{ node, data }" style="text-align: left">
 
                     <!--          文件，文件夹图标-->
                               <img :src="require('@/assets/file.svg')"
@@ -23,15 +23,15 @@
                                    style="height: 12px;margin-right: 5px"/>
                               <span v-if="node.data.editing==null||node.data.editing==false">
                                   {{node.label}}
-
                                   <img :src="require('@/assets/lock.svg')" style="height: 15px"
                                        v-if="node.data.readOnly"/>
                               </span>
 
 
 
-                              <input v-if="node.data.editing==true" v-model="node.label" @blur="node.data.editing=false"
-                                     autofocus/>
+                              <el-input v-if="node.data.editing==true" v-model="node.data.filename"
+                                        class="newinput"
+                                        @blur="node.data.editing=false" @keyup.enter.native="node.data.editing=false"/>
 
                             <span v-if="node.data.type=='folder'">
                               <el-button
@@ -175,39 +175,45 @@
                 this.editableTabs = tabs.filter(tab => tab.name !== targetName);
             },
             appendFolder(data) {
+                console.log(data.path + data.filename + '/')
                 data.children.push({
                     type: "folder",
-                    path: "/src/main/com",
+                    path: data.path + data.filename + '/',
                     filename: "newFolder",
-                    content: 'null',
+                    content: null,
                     editing: true,
+                    readOnly: false,
                     children: []
                 })
             },
             appendFile(data) {
+                console.log(data.path + data.filename + '/')
                 data.children.push({
                     type: "file",
-                    path: "/src/main/com",
+                    path: data.path + data.filename + '/',
                     filename: "newFile",
-                    content: 'null',
+                    content: '',
+                    readOnly: false,
                     editing: true
                 })
             },
             handleNodeClick(data) {
 
-                this.currentFile = data;
-                this.cmOptions.readOnly = data.readOnly;
-                if (data.type == 'file' && this.opendTabs.indexOf(data) == -1) {
-                    let k = data.path + data.filename
-                    let v = data.readOnly
-                    this.elTabPaneReadOnly[k] = v;
+                if (data.type == 'file') {
+                    this.currentFile = data;
+                    this.cmOptions.readOnly = data.readOnly;
+
                     if (this.opendTabs.indexOf(data) == -1) {
-                        this.opendTabs.push(data)
+                        let k = data.path + data.filename
+                        let v = data.readOnly
+                        this.elTabPaneReadOnly[k] = v;
+
+                        if (this.opendTabs.indexOf(data) == -1) {
+                            this.opendTabs.push(data)
+                        }
                     }
+                    this.editableTabsValue = data.path + data.filename;
                 }
-                this.editableTabsValue = data.path + data.filename;
-                // console.log("codetree: ");
-                // console.log(this.codetree);
             }
         }
     }
@@ -236,5 +242,11 @@
         display: inline-block;
     }
 
+    .newinput input {
+        line-height: 23px !important;
+        height: 23px !important;
+        padding: 0px 7px;
+        width: 120px !important;;
+    }
 </style>
 
