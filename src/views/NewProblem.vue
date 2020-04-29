@@ -131,6 +131,34 @@
                                     </el-select>
                                 </el-form-item>
 
+                                <el-form-item label="标签">
+                                    <el-tag
+                                            type="info"
+                                            style="margin-right: 5px"
+                                            :key="tag.id"
+                                            v-for="tag in problemtags"
+                                            closable
+                                            :disable-transitions="false"
+                                            @close="deletetag(tag)">
+                                        {{tag.name}}
+                                    </el-tag>
+
+                                    <el-select placeholder="请选择" v-if="inputVisible" v-model="inputNull"
+                                               @change="addproblemtag">
+
+                                        <el-option
+                                                v-for="item in categorylist"
+                                                :key="item.id"
+                                                :label="item.name"
+                                                :value="item">
+                                        </el-option>
+
+                                    </el-select>
+                                    <el-button v-else class="button-new-tag" size="small" @click="inputVisible = true">
+                                        + 新标签
+                                    </el-button>
+
+                                </el-form-item>
 
                             </el-form>
 
@@ -167,7 +195,7 @@
                         <div> 请仔细检查是否有错误，无错误后点击提交按钮</div>
                         <div style="height: 25px;"></div>
 
-                        <el-button type="primary" v-on:click="submmitNewProblem">提交</el-button>
+                        <el-button type="primary" v-on:click="submitNewProblem">提交</el-button>
                     </div>
 
                 </div>
@@ -200,6 +228,11 @@
         },
         data() {
             return {
+                inputNull: null,
+                inputVisible: false,
+                problemtags: [],
+
+                categorylist: [],
                 basicinfoForm: {
                     title: '',
                     complexity: 'easy',
@@ -217,6 +250,7 @@
                 contentheight: 0
             }
         }, mounted() {
+            this.getcategorylist();
             var me = this;
             this.contentheight = window.innerHeight - this.$refs.newproblemcontent.getBoundingClientRect().y - 1;
             window.addEventListener("resize", this.windowsresizeHandler)
@@ -225,6 +259,35 @@
             window.removeEventListener("resize", this.windowsresizeHandler)
         },
         methods: {
+            //删除问题tag
+            deletetag(val) {
+                this.problemtags.pop(val)
+            },
+            //添加问题tag
+            addproblemtag(val) {
+                console.log(val)
+                this.inputVisible = false;
+                if (this.problemtags.indexOf(val) == -1) {
+                    this.problemtags.push(val);
+                }
+                this.inputNull = null;
+            },
+            //获得分类列表
+            getcategorylist: function (pagenum, pagecount) {
+                var me = this;
+                axios.get(Url.withBase("/api/categorylist"), {
+                    params: {
+                        symbol: this.$route.params["category"],
+                        pagenum: pagenum == null ? 1 : pagenum,
+                        pagecount: pagecount == null ? 0x7fffffff : pagecount,
+                        withproblemcount: false
+                    }
+                }).then(function (response) {
+                    me.categorylist = response.data.data.content;
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            },
             windowsresizeHandler() {
                 var me = this;
                 me.contentheight = window.innerHeight - me.$refs.newproblemcontent.getBoundingClientRect().y - 1;
@@ -237,7 +300,6 @@
                         lang: lang
                     }
                 }).then(function (response) {
-                    console.log(response)
                     me.basicinfoForm.dockerImage = response.data.data.dockerImage;
                     me.basicinfoForm.initCode = JSON.parse(response.data.data.initcode)['problemCodeFileItems'];
                     me.basicinfoForm.dockerCacheDir = response.data.data.dockerCacheDir;
@@ -253,8 +315,13 @@
                 console.log(typeof this.basicinfoForm.initCode == "object")
 
             },
-            submmitNewProblem() {
+            submitNewProblem() {
                 var that = this;
+                let problemcategoryids = [];
+                this.problemtags.forEach(function (item) {
+                    problemcategoryids.push(item.id)
+                })
+
                 axios.post(Url.withBase("/api/newproblem"), {
                     title: that.basicinfoForm.title,
                     complexity: that.basicinfoForm.complexity,
@@ -265,7 +332,8 @@
                     memoryLimit: that.basicinfoForm.memoryLimit,
                     dockerCacheDir: that.basicinfoForm.dockerCacheDir,
                     lang: "java1.8/maven",//暂时只支持java1.8
-                    cmd: that.basicinfoForm.cmd
+                    cmd: that.basicinfoForm.cmd,
+                    categoryids:problemcategoryids
                 }).then(function (response) {
                     that.$router.push("/problem/" + response.data.data.problemid);
                     console.log(response)
