@@ -24,7 +24,7 @@
                 <!--                            vip-->
                 <el-table-column
                         width="30">
-                    <template slot-scope="scope">
+                    <template slot-scope="scope" v-if="showviptag">
                         <div style="display: flex;flex-direction: row;justify-content: center;align-items: center">
                             <img :src="require('@/assets/vip.svg')" style="width: 17px;"
                                  v-if="scope.row.onlyVip==true"/>
@@ -33,6 +33,7 @@
                 </el-table-column>
 
                 <el-table-column
+                        v-if="showproblemid"
                         prop="id"
                         label="#"
                         width="180">
@@ -67,6 +68,7 @@
             </el-table>
             <!--            显示页数-->
             <el-pagination
+                    v-if="pagenavigator"
                     background
                     style="margin-top: 15px"
                     layout="prev, pager, next"
@@ -89,9 +91,21 @@
 
     export default {
         props: {
+            showproblemid: {
+                type: Boolean,
+                default: true
+            },
+            showviptag: {
+                type: Boolean,
+                default: true
+            },
             deleteBtn: {
                 type: Boolean,
                 default: false
+            },
+            pagenavigator: {
+                type: Boolean,
+                default: true
             },
             currentpage: Number,
             total: Number,
