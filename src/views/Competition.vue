@@ -49,10 +49,10 @@
 
                     <el-button type="text" v-if="competition.userJoined==true">已报名</el-button>
 
-                    <div>
-                        <el-button v-if="competition.status=='processing'&&competition.userJoined==true">进入竞赛
-                        </el-button>
-                    </div>
+                    <!--                    <div>-->
+                    <!--                        <el-button v-if="competition.status=='processing'&&competition.userJoined==true">进入竞赛-->
+                    <!--                        </el-button>-->
+                    <!--                    </div>-->
 
                     <div style="height: 50px;"></div>
                 </div>
@@ -64,6 +64,7 @@
                     <div v-if="competition.status=='processing'||competition.status=='end'">
                         <div style="height: 30px;"></div>
                         <ProblemList
+                                :redirectfunc="redirectToCompetitionProblem"
                                 :showviptag="false"
                                 :showproblemid="false"
                                 :pagenavigator="false"
@@ -220,6 +221,10 @@
             changeproblemlistpage: function (val) {
                 this.getcompetitionproblemset(val)
             },
+            //跳转到problem
+            redirectToCompetitionProblem: function (problemid) {
+                this.$router.push("/competition/" + this.$route.params["competitionid"] + "/problem/" + problemid)
+            }
         }
     }
 </script>

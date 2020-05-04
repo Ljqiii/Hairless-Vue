@@ -91,6 +91,10 @@
 
     export default {
         props: {
+            redirectfunc: {
+                type: Function,
+                default: null
+            },
             showproblemid: {
                 type: Boolean,
                 default: true
@@ -136,15 +140,25 @@
             //跳转到问题页面
             redirectToProbvlem: function (row) {
                 let vipOnly = row.onlyVip;
+                //不是vip题目
                 if (!vipOnly) {
-                    this.$router.push("/problem/" + row.id)
+                    this.redirect(row.id);
+                    //是vip题目并且是vip
                 } else if (vipOnly && AuthUtil.isVip()) {
-                    this.$router.push("/problem/" + row.id)
+                    this.redirect(row.id)
                 } else {
                     this.$message({
                         message: '仅Vip可以查看此题目',
                         type: 'warning'
                     });
+                }
+            },
+            //如果自定义函数为空，则跳转到/problem/{problemid}
+            redirect: function (problemid) {
+                if (this.redirectfunc != null) {
+                    this.redirectfunc(problemid)
+                } else {
+                    this.$router.push("/problem/" + problemid)
                 }
             }
         }

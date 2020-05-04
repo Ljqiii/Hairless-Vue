@@ -151,7 +151,7 @@
             this.connectWs()
         },
         destroyed() {
-                window.removeEventListener("resize",this.windowsresizeHandler);
+            window.removeEventListener("resize", this.windowsresizeHandler);
         },
         computed: {
             problemstyleheight() {
@@ -217,6 +217,7 @@
                 this.clearResults();
                 var that = this;
                 let data = {
+                    competitionId: this.$route.params["competitionid"] != null ? parseInt(this.$route.params["competitionid"]) : null,
                     problemId: this.problem.id,
                     problemCode: {problemCodeFileItems: this.problem.initProblemCode}
                 }
@@ -239,6 +240,7 @@
             },
             //get问题
             getProblem() {
+                //TODO:如果是竞赛，另一个获取题目的url，为了验证是否有加入竞赛
                 let me = this;
                 axios.get(Url.withBase('/api/problem/' + this.$route.params["problemid"]), {})
                     .then(function (response) {

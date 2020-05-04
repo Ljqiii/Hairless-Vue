@@ -79,6 +79,10 @@ const routes = [
         path: '/problem/:problemid',
         name: 'Problem',
         component: Problem
+    },{//竞赛题目
+        path: '/competition/:competitionid/problem/:problemid',
+        name: 'Problem',
+        component: Problem
     }, {//redirect
         path: '/redirect/',
         name: 'Redirect',
