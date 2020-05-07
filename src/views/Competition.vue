@@ -81,7 +81,16 @@
                     <div style="height: 30px;"></div>
 
                 </div>
+                <!--                提交记录-->
+                <div v-if="currentcompetitionpanel=='submitset'">
+                    <div style="height: 20px;"></div>
+                    <SubmitList :all-submits="allSubmits" :show-problem-id="true">
 
+                    </SubmitList>
+                    <div style="height: 20px;"></div>
+
+                </div>
+                <!--排行榜-->
                 <div v-if="currentcompetitionpanel=='leaderboard'">
 
                 </div>
@@ -118,13 +127,14 @@
     import CompetitionList from "../components/CompetitionList";
     import mavonEditor from "mavon-editor";
     import ProblemList from "../components/ProblemList";
-
+    import SubmitList from "../components/SubmitList";
 
     export default {
         name: 'Competition',
         components: {
             CompetitionList,
-            ProblemList
+            ProblemList,
+            SubmitList
         }, computed: {
             convertToMarkDown() {
                 return mavonEditor.markdownIt.render(this.competition["description"] == null ? "" : this.competition["description"])
@@ -134,6 +144,7 @@
             this.getcompetition()
         }, data() {
             return {
+                allSubmits: [],
                 competitionproblemset: [],
                 competitionproblempagedata: {},
                 currentcompetitionpanel: "description",
@@ -143,10 +154,26 @@
                 competition: {},
             }
         }, methods: {
+            //获得竞赛的所有提交记录
+            getAllSubmit() {
+                let me = this;
+                axios.get(Url.withBase('/api/competition/submitsset/'), {
+                    params: {
+                        competitionid: this.$route.params["competitionid"]
+                    }
+                }).then(function (response) {
+                    console.log(response)
+                    me.allSubmits = response.data.data;
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            },
             handleClick(tab, event) {
                 this.currentcompetitionpanel = tab.name
-                if (tab.name == "problemset" || this.competitionproblemset) {
+                if (tab.name == "problemset" && this.competitionproblemset == 0) {
                     this.getcompetitionproblemset()
+                } else if (tab.name == 'submitset') {
+                    this.getAllSubmit()
                 }
             },
             // 获得竞赛
