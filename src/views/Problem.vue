@@ -23,15 +23,6 @@
                         <vue-custom-scrollbar style="height: 100%;flex: 1;text-align: left;padding-left: 10px;"
                                               settings="maxScrollbarLength: 60">
                             <div style="display: flex;flex-direction: column;width: 95%">
-                                <div style="line-height: normal;display: flex;flex-direction: row;border-bottom: 1px solid #e8ebf3;height: 35px;line-height: 35px;margin-top: 2px">
-                                    <div style="flex: 1">
-                                        日期
-                                    </div>
-                                    <div style="flex: 1">
-                                        结果
-                                    </div>
-                                </div>
-
                                 <SubmitList :all-submits="allSubmits">
 
                                 </SubmitList>

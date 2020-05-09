@@ -17,7 +17,7 @@
 
                 <h4>
                     <span v-if="competition.startTime">开始时间:</span><span style="font-weight: normal">{{competition.startTime}}</span>
-                    <span style="width: 30px;"></span>
+                    <div style="width: 20px;height: 1px;display: inline-block"></div>
                     <span v-if="competition.endTime">结束时间:</span> <span
                         style="font-weight: normal">{{competition.endTime}}</span>
                 </h4>
@@ -83,16 +83,50 @@
                 </div>
                 <!--                提交记录-->
                 <div v-if="currentcompetitionpanel=='submitset'">
-                    <div style="height: 20px;"></div>
+                    <div style="height: 30px;"></div>
                     <SubmitList :all-submits="allSubmits" :show-problem-id="true">
 
                     </SubmitList>
-                    <div style="height: 20px;"></div>
+                    <div style="height: 50px;"></div>
 
                 </div>
                 <!--排行榜-->
                 <div v-if="currentcompetitionpanel=='leaderboard'">
+                    <div style="text-align: right;margin-top: 15px;margin-bottom: 10px;margin-right: 10px">
+                        <i class="el-icon-warning-outline"></i>
+                        数据更新频率：1min，请手动刷新
+                    </div>
+                    <el-table
+                            :data="leaderboardtablecontentjson"
+                            style="width: 100%">
 
+                        <el-table-column
+                                v-for="item in leaderboardtablemetajson" :key="item.dataprop"
+                                :prop="item.dataprop" :label="item.columnName">
+                            <template slot-scope="scope">
+                                <div :style="{height:'100%',display:'flex',justifyContent:'flex-start',alignItems:'center',
+                                backgroundColor: calcTableItemSuccessFail(scope,item.dataprop)==true?'#CCFF90':( calcTableItemSuccessFail(scope,item.dataprop)==false?'#ff8a80':'')}">
+
+
+                                    <el-popover
+                                            placement="top-start"
+                                            trigger="hover"
+                                            content="第一个人解决此问题"
+                                            :style="{height:'100%',display:'flex',justifyContent:'flex-start',alignItems:'center'}">
+                                        <div slot="reference"
+                                             :style="{height:'100%',display:'flex',justifyContent:'flex-start',alignItems:'center'}">
+                                            <img :src="require('@/assets/firstblood.svg')" style="width: 17px;"
+                                                 v-if="calcTableItemFirstBlood(scope,item.dataprop)"/>
+                                        </div>
+                                    </el-popover>
+
+
+                                    {{convertToTableItem(scope,item.dataprop)}}
+                                </div>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div style="height: 50px"></div>
                 </div>
 
 
@@ -144,6 +178,8 @@
             this.getcompetition()
         }, data() {
             return {
+                leaderboardtablecontentjson: [],
+                leaderboardtablemetajson: [],
                 allSubmits: [],
                 competitionproblemset: [],
                 competitionproblempagedata: {},
@@ -154,6 +190,58 @@
                 competition: {},
             }
         }, methods: {
+            //排行榜表格的每一项数据内容
+            convertToTableItem(data, dataprop) {
+                if (dataprop.indexOf("_costTime") >= 0) {
+                    if (data.row.leaderBoardItemProblems[dataprop] == null) {
+                        return ""
+                    }
+                    return (data.row.leaderBoardItemProblems[dataprop]["timeCost"] != null ? data.row.leaderBoardItemProblems[dataprop]["timeCost"] : "")
+                        + (((data.row.leaderBoardItemProblems[dataprop]["waTimes"] != null) && (data.row.leaderBoardItemProblems[dataprop]["waTimes"] != 0)) ? (" (-" + data.row.leaderBoardItemProblems[dataprop]["waTimes"] + ")") : "")
+                } else {
+                    return data.row[dataprop];
+                }
+            },
+            //计算题目是否是第一个解出来的
+            calcTableItemFirstBlood(data, dataprop) {
+                if (dataprop.indexOf("_costTime") >= 0) {
+                    if (data.row.leaderBoardItemProblems[dataprop] == null) {
+                        return false
+                    }
+                    return (data.row.leaderBoardItemProblems[dataprop]["firstBlood"] != null) && (data.row.leaderBoardItemProblems[dataprop]["firstBlood"] != false)
+                } else {
+                    return false;
+                }
+            },
+
+            //计算题目是否是第一个解出来的
+            calcTableItemSuccessFail(data, dataprop) {
+                if (dataprop.indexOf("_costTime") >= 0) {
+                    if (data.row.leaderBoardItemProblems[dataprop] == null) {
+                        return null
+                    } else if (data.row.leaderBoardItemProblems[dataprop]["success"] == true) {
+                        return true;
+                    } else if (data.row.leaderBoardItemProblems[dataprop]["waTimes"] != null && data.row.leaderBoardItemProblems[dataprop]["waTimes"] >= 1) {
+                        return false;
+                    }
+                } else {
+                    return null;
+                }
+            },
+            // 获得排行榜
+            getCompetitionLeaderBoard: function () {
+                var me = this;
+                axios.get(Url.withBase("/api/competition/getLeaderBoard"), {
+                    params: {
+                        competitionId: this.$route.params["competitionid"]
+                    }
+                }).then(function (response) {
+                    me.leaderboardtablecontentjson = response.data.data.tablecontentjson;
+                    me.leaderboardtablemetajson = response.data.data.tablemetajson;
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            },
             //获得竞赛的所有提交记录
             getAllSubmit() {
                 let me = this;
@@ -168,12 +256,15 @@
                     console.log(error)
                 })
             },
+            //竞赛那一列的点击事件
             handleClick(tab, event) {
                 this.currentcompetitionpanel = tab.name
                 if (tab.name == "problemset" && this.competitionproblemset == 0) {
                     this.getcompetitionproblemset()
                 } else if (tab.name == 'submitset') {
                     this.getAllSubmit()
+                } else if (tab.name == 'leaderboard') {
+                    this.getCompetitionLeaderBoard()
                 }
             },
             // 获得竞赛
