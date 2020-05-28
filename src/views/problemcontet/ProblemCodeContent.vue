@@ -126,11 +126,12 @@
         },
         data() {
             return {
+                keyFile: {},
                 elTabPaneReadOnly: {},
                 currentFile: {content: ""},
                 currentTabName: '',
                 opendTabs: [],
-                editableTabsValue: '2',
+                editableTabsValue: '',
                 editableTabs: [{
                     title: 'Tab 1',
                     name: '1',
@@ -158,6 +159,8 @@
         methods: {
             handleClick(tab, event) {
                 this.editableTabsValue = tab.name;
+                this.currentFile = this.keyFile[tab.name];
+
                 if (this.enableReadOnly) {
                     this.cmOptions.readOnly = this.elTabPaneReadOnly[tab.name] == null ? false : this.elTabPaneReadOnly[tab.name];
                 }
@@ -218,6 +221,7 @@
                         }
                     }
                     this.editableTabsValue = data.path + data.filename;
+                    this.keyFile[data.path + data.filename] = data;
                 }
             }
         }
