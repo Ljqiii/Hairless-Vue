@@ -10,9 +10,37 @@
                         <span slot="label"><i class="el-icon-tickets"></i> 题目描述</span>
                         <ProblemDescription v-bind:problem="problem"></ProblemDescription>
                     </el-tab-pane>
-                    <el-tab-pane label="讨论" name="discuss">
-                        <span slot="label" v-on:click="this.getAllSubmit"><i
+
+                    <el-tab-pane label="讨论" name="discuss" style="width: 100%">
+                        <span slot="label" v-on:click="getProblemComment(0)"><i
                                 class="el-icon-chat-line-round"></i> 讨论</span>
+
+                        <vue-custom-scrollbar style="height: 100%;flex: 1;text-align: left;padding-left: 10px;"
+                                              settings="maxScrollbarLength: 60">
+                            <div style="display: flex;flex-direction: column;padding-right: 15px">
+                                <el-input
+                                        :rows="2"
+                                        type="textarea"
+                                        placeholder="请输入内容"
+                                        v-model="problemCommentContentInput"
+                                        show-word-limit></el-input>
+                                <div style="display: flex;justify-content: flex-end;padding-top: 10px">
+
+                                    <el-button type="primary" v-on:click="newProblemComment">回帖</el-button>
+                                </div>
+                                <div style="margin-top: 15px">
+                                    所有评论
+                                </div>
+                                <el-divider class="comment-divider"></el-divider>
+
+                                <PostCommentList :postcommentlist="problemcommentlist"
+                                                 :pagedata="problemcommentpagedata" :changepage="getProblemComment"></PostCommentList>
+
+
+                                <div style="height: 30px;"></div>
+                            </div>
+                        </vue-custom-scrollbar>
+
 
                     </el-tab-pane>
 
@@ -124,6 +152,7 @@
 </template>
 
 <script>
+    import PostCommentList from "../components/PostCommentList";
     import mavonEditor from "mavon-editor";
     import ProblemDescription from "./problemcontet/ProblemDescription";
     import axios from "axios";
@@ -141,7 +170,8 @@
             SubmitList,
             ProblemDescription,
             ProblemCodeContent,
-            vueCustomScrollbar
+            vueCustomScrollbar,
+            PostCommentList
         },
         mounted() {
             var me = this;
@@ -162,6 +192,9 @@
         },
         data() {
             return {
+                problemcommentpagedata: {},
+                problemcommentlist: [],
+                problemCommentContentInput: "",
                 allAnswers: [],
                 allSubmits: [],
                 steps: [],
@@ -177,6 +210,39 @@
             }
         },
         methods: {
+            //获得评论
+            getProblemComment(page) {
+                var that = this;
+                axios.get(Url.withBase("/api/problemComments"), {
+                    params: {
+                        pagenum: page,
+                        problemId: that.$route.params["problemid"]
+                    }
+                }).then(function (response) {
+                    console.log(response.data.data)
+                    that.problemcommentlist = response.data.data.content;
+                    that.problemcommentpagedata = response.data.data.pageInfo;
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            },
+            //新评论
+            newProblemComment(){
+                var that = this;
+                axios.post(Url.withBase("/api/pushProblemComment"), {
+                    problemId: that.$route.params["problemid"],
+                    commentId: null,
+                    problemCommentContent: that.problemCommentContentInput
+                }).then(function (response) {
+                    if(response.data.code==200){
+                        that.getProblemComment()
+                        that.problemCommentContentInput=""
+                    }
+                    console.log(response)
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            },
             convertToMarkDown(content) {
                 return mavonEditor.markdownIt.render(content)
             },
@@ -310,5 +376,8 @@
 
     .el-timeline {
         padding-inline-start: 30px;
+    }
+    .comment-divider{
+        margin: 5px !important;
     }
 </style>
