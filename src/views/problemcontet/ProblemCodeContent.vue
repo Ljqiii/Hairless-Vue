@@ -24,7 +24,7 @@
                               <span v-if="node.data.editing==null||node.data.editing==false">
                                   {{node.label}}
                                   <img :src="require('@/assets/lock.svg')" style="height: 15px"
-                                       v-if="node.data.readOnly"/>
+                                       v-if="node.data.readOnly&&enableReadOnly"/>
                               </span>
 
 
@@ -110,6 +110,10 @@
                 type: Boolean,
                 default: false
             },
+            enableReadOnly: {
+                type: Boolean,
+                default: true
+            }
         },
         name: 'ProblemCodeContent',
         components: {
@@ -154,8 +158,9 @@
         methods: {
             handleClick(tab, event) {
                 this.editableTabsValue = tab.name;
-
-                this.cmOptions.readOnly = this.elTabPaneReadOnly[tab.name] == null ? false : this.elTabPaneReadOnly[tab.name];
+                if (this.enableReadOnly) {
+                    this.cmOptions.readOnly = this.elTabPaneReadOnly[tab.name] == null ? false : this.elTabPaneReadOnly[tab.name];
+                }
             },
             removeTab(targetName) {
                 let tabs = this.editableTabs;
@@ -201,7 +206,7 @@
 
                 if (data.type == 'file') {
                     this.currentFile = data;
-                    this.cmOptions.readOnly = data.readOnly;
+                    this.enableReadOnly ? this.cmOptions.readOnly = data.readOnly : null;
 
                     if (this.opendTabs.indexOf(data) == -1) {
                         let k = data.path + data.filename

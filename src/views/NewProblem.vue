@@ -177,7 +177,7 @@
                 <!--                初始化代码-->
                 <div v-if="currentstep==2" style="height: 100%;display: flex;flex-direction: column">
                     <h3 style="text-align: center">初始化代码</h3>
-                    <ProblemCodeContent :codetree="basicinfoForm.initCode instanceof Object?basicinfoForm.initCode:null"
+                    <ProblemCodeContent :codetree="basicinfoForm.initCode instanceof Object?basicinfoForm.initCode:null" :enable-read-only="false"
                                         style="flex: 1;height: 0;"></ProblemCodeContent>
                     <div style="height: 40px;"></div>
 
