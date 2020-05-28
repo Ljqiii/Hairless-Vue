@@ -26,7 +26,7 @@
                                         show-word-limit></el-input>
                                 <div style="display: flex;justify-content: flex-end;padding-top: 10px">
 
-                                    <el-button type="primary" v-on:click="newProblemComment">回帖</el-button>
+                                    <el-button type="primary" v-on:click="newProblemComment">发表</el-button>
                                 </div>
                                 <div style="margin-top: 15px">
                                     所有评论
