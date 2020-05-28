@@ -62,7 +62,7 @@
                 this.$router.push(redirectpath)
             }
 
-            this.connectWs();
+            // this.connectWs();
 
         }, data() {
             return {

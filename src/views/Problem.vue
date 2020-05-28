@@ -14,7 +14,6 @@
                         <span slot="label" v-on:click="this.getAllSubmit"><i
                                 class="el-icon-chat-line-round"></i> 讨论</span>
 
-
                     </el-tab-pane>
 
                     <el-tab-pane label="提交记录" name="submit" style="height: 100%;width: 100%;"
@@ -31,8 +30,23 @@
                             </div>
                         </vue-custom-scrollbar>
                     </el-tab-pane>
-                    <el-tab-pane label="题解" name="answer">
-                        <span slot="label"><i class="el-icon-document-checked"></i> 题解</span>
+
+                    <el-tab-pane label="题解" name="answer" style="height: 100%;width: 100%;">
+                        <span slot="label" v-on:click="this.getAllAnswer"><i
+                                class="el-icon-document-checked"></i> 题解</span>
+
+                        <vue-custom-scrollbar style="height: 100%;flex: 1;text-align: left;padding-left: 10px;"
+                                              settings="maxScrollbarLength: 60">
+                            <div style="display: flex;flex-direction: column;width: 95%">
+                                <div v-for="item in allAnswers"
+                                     :key="item.id" v-html="convertToMarkDown(item.answercontent)">
+
+                                </div>
+                                <br>
+
+                                <div style="height: 30px;"></div>
+                            </div>
+                        </vue-custom-scrollbar>
                     </el-tab-pane>
                 </el-tabs>
             </el-col>
@@ -110,6 +124,7 @@
 </template>
 
 <script>
+    import mavonEditor from "mavon-editor";
     import ProblemDescription from "./problemcontet/ProblemDescription";
     import axios from "axios";
     import Url from "../utils/Url";
@@ -139,6 +154,7 @@
             window.removeEventListener("resize", this.windowsresizeHandler);
         },
         computed: {
+
             problemstyleheight() {
                 let a = this.problemcontentheight;
                 return a;
@@ -146,6 +162,7 @@
         },
         data() {
             return {
+                allAnswers: [],
                 allSubmits: [],
                 steps: [],
                 logs: [],
@@ -160,6 +177,9 @@
             }
         },
         methods: {
+            convertToMarkDown(content) {
+                return mavonEditor.markdownIt.render(content)
+            },
             windowsresizeHandler() {
                 var me = this;
                 me.problemcontentheight = window.innerHeight - me.$refs.problemcontent.getBoundingClientRect().y - 1;
@@ -250,8 +270,21 @@
                 }).catch(function (error) {
                     console.log(error)
                 })
+            },
+            //题解
+            getAllAnswer() {
+                let me = this;
+                axios.get(Url.withBase('/api/getProblemAnswer/'), {
+                    params: {
+                        problemId: this.$route.params["problemid"]
+                    }
+                }).then(function (response) {
+                    console.log(response)
+                    me.allAnswers = response.data.data;
+                }).catch(function (error) {
+                    console.log(error)
+                })
             }
-
         }
     }
 

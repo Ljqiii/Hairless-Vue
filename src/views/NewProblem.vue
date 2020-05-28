@@ -325,6 +325,7 @@
                 axios.post(Url.withBase("/api/newproblem"), {
                     title: that.basicinfoForm.title,
                     complexity: that.basicinfoForm.complexity,
+                    answer: that.basicinfoForm.answer,
                     onlyVip: that.basicinfoForm.onlyVip,
                     description: that.basicinfoForm.description,
                     dockerImage: that.basicinfoForm.dockerImage,
@@ -333,7 +334,7 @@
                     dockerCacheDir: that.basicinfoForm.dockerCacheDir,
                     lang: "java1.8/maven",//暂时只支持java1.8
                     cmd: that.basicinfoForm.cmd,
-                    categoryids:problemcategoryids
+                    categoryids: problemcategoryids
                 }).then(function (response) {
                     that.$router.push("/problem/" + response.data.data.problemid);
                     console.log(response)
