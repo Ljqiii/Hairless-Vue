@@ -11,7 +11,7 @@
                         <ProblemDescription v-bind:problem="problem"></ProblemDescription>
                     </el-tab-pane>
 
-                    <el-tab-pane label="讨论" name="discuss" style="width: 100%">
+                    <el-tab-pane label="讨论" name="discuss" style="width: 100%" v-if="this.$route.params['competitionid'] == null">
                         <span slot="label" v-on:click="getProblemComment(0)"><i
                                 class="el-icon-chat-line-round"></i> 讨论</span>
 
@@ -59,7 +59,7 @@
                         </vue-custom-scrollbar>
                     </el-tab-pane>
 
-                    <el-tab-pane label="题解" name="answer" style="height: 100%;width: 100%;">
+                    <el-tab-pane label="题解" name="answer" style="height: 100%;width: 100%;" v-if="this.$route.params['competitionid'] == null">
                         <span slot="label" v-on:click="this.getAllAnswer"><i
                                 class="el-icon-document-checked"></i> 题解</span>
 
