@@ -103,7 +103,7 @@
         },
         computed: {
             logouturl() {
-                return Url.withAuthBase("/logout")
+                return Url.withBase("/api/clearSession")
             },
             islogin() {
                 return this.$store.getters.getIsLogin;
@@ -134,6 +134,7 @@
             }, handleCommand(command) {
                 //退出登录
                 if (command == "logout") {
+                    sessionStorage.removeItem("pathBeforeLogin");
                     this.$refs.logoutformhidden.submit();
                     this.$message("退出登录");
                 }
